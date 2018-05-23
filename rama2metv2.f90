@@ -85,7 +85,7 @@ subroutine guarda
   salir=.true.
   do while (salir)
     rval=rnulo
-    read(13,*,END=200)fecha,hora,c_id,cvar,rval
+    read(13,*,END=300)fecha,hora,c_id,cvar,rval
        if (fecha(4:5).eq.'04') then
          cfecha= fconvert(fecha,hora)
          ivar = vconvert(cvar)
@@ -119,6 +119,7 @@ subroutine guarda
 ! 11 Observation_Value in the units prescribed for the grib code
 
 100 format (A10,a5,A3,A,F)
+300 continue
 end subroutine guarda
 
 subroutine lee
@@ -151,54 +152,54 @@ READ (dia, '(I2)'), idia
 READ (mes, '(I2)'), imes
 READ (hora, '(I2)'), ih
   select case (imes)
-  case (1)
-    if(ih-7.lt.0) then
-        ih=17+ih
-        if(idia-1.le.0) then
-         idia=31
-         imes=12
-         ianio=ianio-1
+  case (12)
+    if(ih+6.gt.23) then
+        ih=ih-18
+        if(idia+1.gt.31) then
+         idia=1
+         imes=imes+1
+         ianio=ianio+1
         else
-         idia=idia-1
+         idia=idia+1
         end if
     else
-        ih=ih-7
+        ih=ih+6
     end if
-  case (2,4,6,8,9,11)
-   if(ih-7.lt.0) then
-        ih=17+ih
-        if(idia-1.le.0) then
-          idia=31
-          imes=imes-1
+  case (4,6,8,9,11)
+   if(ih+6.gt.23) then
+        ih=ih-18
+        if(idia+1.gt.30) then
+          idia=1
+          imes=imes+1
         else
-          idia=idia-1
+          idia=idia+1
         end if
     else
-        ih=ih-7
+        ih=ih+6
    end if
-  case(3)
-    if(ih-7.lt.0) then
-        ih=17+ih
-        if(idia-1.le.0) then
-          idia=29
-          imes=imes-1
+  case(2)
+    if(ih+6.gt.23) then
+        ih=ih-18
+        if(idia+1.gt.29) then
+          idia=1
+          imes=imes+1
         else
-          idia=idia-1
+          idia=idia+1
         end if
     else
-        ih=ih-7
+        ih=ih+6
     end if
-  case(5,7,10,12)
-    if(ih-7.lt.0) then
-        ih=17+ih
-        if(idia-1.le.0) then
-          idia=30
-          imes=imes-1
+  case(1,3,5,7,10)
+    if(ih+6.gt.23) then
+        ih=ih-18
+        if(idia+1.gt.31) then
+          idia=1
+          imes=imes+1
         else
-          idia=idia-1
+          idia=idia+1
         end if
     else
-        ih=ih-7
+        ih=ih+6
     end if
   case DEFAULT
   end select
