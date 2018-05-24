@@ -44,21 +44,21 @@ subroutine guarda
     salir=.true.
     sigue=.false.
     Message_type='ADPSFC'
-    fname ='meteorologia_2016.csv'
-    fname2='contaminantes_2016.csv'
+    fname ='meteorologia_2010.csv'
+    fname2='contaminantes_2010.csv'
     open (unit=12,file=fname ,status='old',action='read')
     open (unit=13,file=fname2,status='old',action='read')
     do i=1,11
        read(12,*) cdum
        read(13,*) cdum
     end do
-    open (unit=20,file='rama2016_met.txt')
-    open (unit=21,file='rama2016_pol.txt')
+    open (unit=20,file='rama2010_met.txt')
+    open (unit=21,file='rama2010_pol.txt')
      I=0
     do while (salir)
     rval=rnulo
     read(12,*,END=200)fecha,hora,c_id,cvar,rval
-    if (fecha(4:5).eq.'04') then
+    if (fecha(4:5).eq.'01' ) then
       ivar = vconvert(cvar)
     if(rval.ne.rnulo.and.ivar.eq.1 ) rval=rval*101325/760 ! conversion de mmHg a Pa
     if(rval.ne.rnulo.and.ivar.eq.11) rval=rval+273.15 ! conversion de C a K
@@ -79,16 +79,17 @@ subroutine guarda
       end if
 ! vientos fin
     end if ! fecha
-   if(fecha(4:5).eq.'05'.and. hora(1:2).eq.'07') salir=.false.
+   if(fecha(4:5).eq.'02'.and. hora(1:2).eq.'07'.and.trim(cvar).eq."PBa") salir=.false.
    end do  !salir
 200 continue
   salir=.true.
   do while (salir)
     rval=rnulo
     read(13,*,END=300)fecha,hora,c_id,cvar,rval
-       if (fecha(4:5).eq.'04') then
+       if (fecha(4:5).eq.'01' ) then
          cfecha= fconvert(fecha,hora)
          ivar = vconvert(cvar)
+         !print *,ivar,cvar
        if(rval.ne.rnulo.and.ivar.eq.148) rval=rval*1000! conversion de ppm a ppb
          do j=1,n_rama
             if(c_id.eq.id_name(j).and.rval.ne.rnulo)then
@@ -97,7 +98,7 @@ subroutine guarda
             end if
          end do ! n_rama
         end if ! fecha
-    if(fecha(4:5).eq.'05'.and. hora(1:2).eq.'07') salir=.false.
+    if(fecha(4:5).eq.'02'.and. hora(1:2).eq.'07'.and.trim(cvar).eq."SO2") salir=.false.
     end do  !while salir
     close(12)
     close(13)
@@ -143,6 +144,8 @@ character (len=5) hora
 character (len=2) dia,mes,chora
 character (len=4) anio
 integer :: ih,idia,imes,ianio
+integer,parameter :: isf=5
+integer,parameter :: if2=24-isf
 anio=fecha(7:10)
 dia =fecha(1:2)
 mes = fecha(4:5)
@@ -152,54 +155,54 @@ READ (dia, '(I2)'), idia
 READ (mes, '(I2)'), imes
 READ (hora, '(I2)'), ih
   select case (imes)
-  case (12)
-    if(ih+6.gt.23) then
-        ih=ih-18
-        if(idia+1.gt.31) then
+  case (1,3,5,7,8,10)
+    if(ih+isf.gt.23) then
+        ih=ih-if2
+        if(idia+1.ge.32) then
          idia=1
          imes=imes+1
-         ianio=ianio+1
         else
          idia=idia+1
         end if
     else
-        ih=ih+6
+        ih=ih+isf
     end if
-  case (4,6,8,9,11)
-   if(ih+6.gt.23) then
-        ih=ih-18
-        if(idia+1.gt.30) then
+  case (4,6,9,11)
+   if(ih+isf.lt.23) then
+        ih=-if2+ih
+        if(idiar+1.ge.31) then
           idia=1
           imes=imes+1
         else
           idia=idia+1
         end if
     else
-        ih=ih+6
+        ih=ih+isf
    end if
   case(2)
-    if(ih+6.gt.23) then
-        ih=ih-18
-        if(idia+1.gt.29) then
+    if(ih+isf.gt.23) then
+        ih=-if2+ih
+        if(idia+1.ge.29) then
           idia=1
           imes=imes+1
         else
           idia=idia+1
         end if
     else
-        ih=ih+6
+        ih=ih+isf
     end if
-  case(1,3,5,7,10)
-    if(ih+6.gt.23) then
-        ih=ih-18
-        if(idia+1.gt.31) then
+  case(12)
+    if(ih+isf.gt.23) then
+        ih=-if2+ih
+        if(idia+1.ge.32) then
           idia=1
-          imes=imes+1
+          imes=1
+         ianio=ianio+1 
         else
           idia=idia+1
         end if
     else
-        ih=ih+6
+        ih=ih+isf
     end if
   case DEFAULT
   end select
