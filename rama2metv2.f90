@@ -3,7 +3,10 @@
 !   
 !
 !   Created by Agustin Garcia on 08/08/16.
-!   Copyright 2016 Centro De ciencais de la Atmosfera, UNAM. All rights reserved.
+!   Copyright 2016 Centro de Ciencias de la Atmosfera, UNAM. All rights reserved.
+!
+!   Changes:
+!   29/06/2018  namelit reading addition
 !
 !   Read contaminantes_2016.csv 
 !         meteorologia_2016.csv
@@ -18,18 +21,43 @@ parameter (rnulo=-9999.)
 real,dimension(n_rama) :: lon,lat,msn
 character(len=6) :: Message_type
 character(len=3),dimension(n_rama)    :: id_name
+character(len=2)::idia, imes, fdia, fmes, ihr, fhr
 
+NAMELIST /FECHA/ ihr, idia, imes,fhr, fdia, fmes
 common /STATIONS/ lon,lat,msn,id_name,Message_type
 end module variables
 
 program  rama2metv2
-use variables
+     use variables
+
+    call lee_nml
 
     call lee
 
     call guarda
 
 contains
+!
+subroutine lee_nml
+    logical existe
+    existe = .FALSE.
+    write(6,*)' >>>> Reading file - namelist.met'
+    inquire ( FILE = 'namelist.met' , EXIST = existe )
+        if ( existe ) then
+        !  Opening the file.
+            open ( FILE   = 'namelist.met' ,      &
+            UNIT   =  unit_nml        ,      &
+            STATUS = 'OLD'            ,      &
+            FORM   = 'FORMATTED'      ,      &
+            ACTION = 'READ'           ,      &
+            ACCESS = 'SEQUENTIAL'     )
+            !  Reading the file
+            READ (unit_nml , NML = FECHA )
+            else
+            stop '***** No namelist.met'
+        ENDIF
+end subroutine lee_nml
+!
 subroutine guarda
     implicit none
     integer i,j
@@ -58,7 +86,7 @@ subroutine guarda
     do while (salir)
     rval=rnulo
     read(12,*,END=200)fecha,hora,c_id,cvar,rval
-    if (fecha(4:5).eq.'03') then
+    if (fecha(4:5).eq.imes.and. hora(1:2).eq.ihr) then
       ivar = vconvert(cvar)
     if(rval.ne.rnulo.and.ivar.eq.1 ) rval=rval*101325/760 ! conversion de mmHg a Pa
     if(rval.ne.rnulo.and.ivar.eq.11) rval=rval+273.15 ! conversion de C a K
@@ -81,14 +109,14 @@ subroutine guarda
         end if
       end do
     end if ! fecha
-   if(fecha(4:5).eq.'04'.and. hora(1:2).eq.'07'.and.trim(cvar).eq."PBa") salir=.false.
+   if(fecha(4:5).eq.fmes.and. hora(1:2).eq.fhr.and.trim(cvar).eq."PBa") salir=.false.
    end do  !salir
 200 continue
   salir=.true.
   do while (salir)
     rval=rnulo
     read(13,*,END=300)fecha,hora,c_id,cvar,rval
-       if (fecha(4:5).eq.'03') then
+       if (fecha(4:5).eq.imes) then
          cfecha= fconvert(fecha,hora)
          ivar = vconvert(cvar)
          !print *,ivar,cvar
@@ -100,7 +128,7 @@ subroutine guarda
             end if
          end do ! n_rama
         end if ! fecha
-    if(fecha(4:5).eq.'04'.and. hora(1:2).eq.'07'.and.trim(cvar).eq."SO2") salir=.false.
+    if(fecha(4:5).eq.fmes .and. hora(1:2).eq.fhr.and.trim(cvar).eq."SO2") salir=.false.
     end do  !while salir
     close(12)
     close(13)
