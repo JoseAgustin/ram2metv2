@@ -6,7 +6,7 @@
 # Created by Agustin Garcia on 29/06/11.
 # Copyright 2011 CCA-UNAM. All rights reserved.
 
-imes=1
+imes=12
 idia=1
 ihr=1
 
@@ -33,7 +33,7 @@ do
 
 if [[ ${imes} -lt 9 ]]; then
 cat << END_namelist >  namelist.met
-&SCALE
+&FECHA
 imes=0${imes}
 fmes=0${fmes}
 idia=0${idia}
@@ -46,7 +46,7 @@ fi
 
 if [[ ${imes} -eq 9 ]]; then
 cat << END_namelist >  namelist.met
-&SCALE
+&FECHA
 imes=0${imes}
 fmes=${fmes}
 idia=0${idia}
@@ -59,7 +59,7 @@ fi
 
 if [[ ${imes} -eq 10 ]]; then
 cat << END_namelist >  namelist.met
-&SCALE
+&FECHA
 imes=${imes}
 fmes=${fmes}
 idia=0${idia}
@@ -72,7 +72,7 @@ fi
 
 if [[ ${imes} -ge 11 ]]; then
 cat << END_namelist >  namelist.met
-&SCALE
+&FECHA
 imes=${imes}
 fmes=${fmes}
 idia=0${idia}
@@ -86,10 +86,10 @@ fi
     ./rama2met.exe
 
 if [[ ${imes} -lt 10 ]];
-then mv rama2011_met.csv rama2011_met_mes0${imes}.csv
-     mv rama2011_pol.csv rama2011_pol_mes0${imes}.csv
-else mv rama2011_met.csv rama2011_met_mes${imes}.csv
-     mv rama2011_pol.csv rama2011_pol_mes${imes}.csv
+then mv rama2011_met.txt rama2011_met_mes0${imes}.csv
+     mv rama2011_pol.txt rama2011_pol_mes0${imes}.csv
+else mv rama2011_met.txt rama2011_met_mes${imes}.csv
+     mv rama2011_pol.txt rama2011_pol_mes${imes}.csv
 fi
 
 imes=$(( $imes + 1 ))
