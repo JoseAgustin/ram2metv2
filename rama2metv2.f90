@@ -44,21 +44,21 @@ subroutine guarda
     salir=.true.
     sigue=.false.
     Message_type='ADPSFC'
-    fname ='meteorologia_2010.csv'
-    fname2='contaminantes_2010.csv'
+    fname ='meteorologia_2011.csv'
+    fname2='contaminantes_2011.csv'
     open (unit=12,file=fname ,status='old',action='read')
     open (unit=13,file=fname2,status='old',action='read')
     do i=1,11
        read(12,*) cdum
        read(13,*) cdum
     end do
-    open (unit=20,file='rama2010_met.txt')
-    open (unit=21,file='rama2010_pol.txt')
+    open (unit=20,file='rama2011_met.txt')
+    open (unit=21,file='rama2011_pol.txt')
      I=0
     do while (salir)
     rval=rnulo
     read(12,*,END=200)fecha,hora,c_id,cvar,rval
-    if (fecha(4:5).eq.'01' ) then
+    if (fecha(4:5).eq.'03') then
       ivar = vconvert(cvar)
     if(rval.ne.rnulo.and.ivar.eq.1 ) rval=rval*101325/760 ! conversion de mmHg a Pa
     if(rval.ne.rnulo.and.ivar.eq.11) rval=rval+273.15 ! conversion de C a K
@@ -66,27 +66,29 @@ subroutine guarda
       do j=1,n_rama
         if(c_id.eq.id_name(j).and.rval.ne.rnulo)then
           write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),ivar,776.,10.,1,rval
+! vientos
+           if(ivar.eq.31)then
+             call viento(ivar,rval,sigue,uw,vw)
+             if (uw.ne.rnulo.and.sigue) then
+       write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),33,776.,10.,1,uw
+       write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),34,776.,10.,1,vw
+             uw=rnulo
+             sigue=.false.
+             end if
+             end if
+! vientos fin
           exit
         end if
       end do
-! vientos
-      call viento(ivar,rval,sigue,uw,vw)
-      if (uw.ne.rnulo.and.sigue) then
-       write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),33,776.,10.,1,uw
-       write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),34,776.,10.,1,vw
-       uw=rnulo
-       sigue=.false.
-      end if
-! vientos fin
     end if ! fecha
-   if(fecha(4:5).eq.'02'.and. hora(1:2).eq.'07'.and.trim(cvar).eq."PBa") salir=.false.
+   if(fecha(4:5).eq.'04'.and. hora(1:2).eq.'07'.and.trim(cvar).eq."PBa") salir=.false.
    end do  !salir
 200 continue
   salir=.true.
   do while (salir)
     rval=rnulo
     read(13,*,END=300)fecha,hora,c_id,cvar,rval
-       if (fecha(4:5).eq.'01' ) then
+       if (fecha(4:5).eq.'03') then
          cfecha= fconvert(fecha,hora)
          ivar = vconvert(cvar)
          !print *,ivar,cvar
@@ -98,7 +100,7 @@ subroutine guarda
             end if
          end do ! n_rama
         end if ! fecha
-    if(fecha(4:5).eq.'02'.and. hora(1:2).eq.'07'.and.trim(cvar).eq."SO2") salir=.false.
+    if(fecha(4:5).eq.'04'.and. hora(1:2).eq.'07'.and.trim(cvar).eq."SO2") salir=.false.
     end do  !while salir
     close(12)
     close(13)
@@ -139,13 +141,14 @@ close(11)
 end subroutine lee
 
 character(len=15) function fconvert(fecha,hora)
+integer,parameter :: isf=5
+integer,parameter :: if2=24-isf
+integer :: ih,idia,imes,ianio
 character(len=10) fecha
 character (len=5) hora
 character (len=2) dia,mes,chora
 character (len=4) anio
-integer :: ih,idia,imes,ianio
-integer,parameter :: isf=5
-integer,parameter :: if2=24-isf
+
 anio=fecha(7:10)
 dia =fecha(1:2)
 mes = fecha(4:5)
@@ -168,7 +171,7 @@ READ (hora, '(I2)'), ih
         ih=ih+isf
     end if
   case (4,6,9,11)
-   if(ih+isf.lt.23) then
+   if(ih+isf.gt.23) then
         ih=-if2+ih
         if(idiar+1.ge.31) then
           idia=1
