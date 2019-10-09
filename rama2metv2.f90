@@ -95,7 +95,7 @@ subroutine guarda
         if(c_id.eq.id_name(j).and.rval.ne.rnulo)then
           write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),ivar,776.,10.,1,rval
 ! vientos
-           if(ivar.eq.31)then
+           if(ivar.eq.31 .or. ivar.eq.32)then
              call viento(ivar,rval,sigue,uw,vw)
              if (uw.ne.rnulo.and.sigue) then
        write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),33,776.,10.,1,uw
