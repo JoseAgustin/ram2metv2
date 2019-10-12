@@ -72,21 +72,21 @@ subroutine guarda
     salir=.true.
     sigue=.false.
     Message_type='ADPSFC'
-    fname ='meteorologia_2011.csv'
-    fname2='contaminantes_2011.csv'
+    fname ='meteorologia_2017.csv'
+    fname2='contaminantes_2017.csv'
     open (unit=12,file=fname ,status='old',action='read')
     open (unit=13,file=fname2,status='old',action='read')
     do i=1,11
        read(12,*) cdum
        read(13,*) cdum
     end do
-    open (unit=20,file='rama2011_met.txt')
-    open (unit=21,file='rama2011_pol.txt')
+    open (unit=20,file='rama2017_met.txt')
+    open (unit=21,file='rama2017_pol.txt')
      I=0
     do while (salir)
     rval=rnulo
     read(12,*,END=200)fecha,hora,c_id,cvar,rval
-    if (fecha(4:5).eq.imes.and. hora(1:2).eq.ihr) then
+    if (fecha(4:5).eq.imes) then
       ivar = vconvert(cvar)
     if(rval.ne.rnulo.and.ivar.eq.1 ) rval=rval*101325/760 ! conversion de mmHg a Pa
     if(rval.ne.rnulo.and.ivar.eq.11) rval=rval+273.15 ! conversion de C a K
@@ -201,7 +201,7 @@ READ (hora, '(I2)'), ih
   case (4,6,9,11)
    if(ih+isf.gt.23) then
         ih=-if2+ih
-        if(idiar+1.ge.31) then
+        if(idia+1.ge.31) then
           idia=1
           imes=imes+1
         else
