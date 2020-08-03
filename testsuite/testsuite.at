@@ -1,0 +1,28 @@
+#
+#
+AT_INIT([RADM2MET])
+AT_BANNER([***** Module subroutines and functions Testing Suite  *****])
+
+AT_SETUP([wind components])
+AT_TESTED(test1)
+AT_CLEANUP
+
+AT_SETUP([READS namelist])
+AT_TESTED(test2)
+AT_CLEANUP
+
+AT_SETUP([fecha convert])
+AT_TESTED(test3)
+AT_CLEANUP
+
+AT_SETUP([variable ID selection])
+AT_TESTED(test4)
+AT_CLEANUP
+
+AT_SETUP([Reads stations file])
+AT_TESTED(test5)
+AT_CLEANUP
+
+AT_SETUP([Reads met and pollutant files])
+AT_TESTED(test6)
+AT_CLEANUP

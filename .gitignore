@@ -3,3 +3,6 @@
 *.txt
 *.mod
 *.prn
+*.log
+*.o
+
