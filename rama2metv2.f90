@@ -22,22 +22,11 @@ real,dimension(n_rama) :: lon,lat,msn
 character(len=6) :: Message_type
 character(len=3),dimension(n_rama)    :: id_name
 character(len=2)::idia, imes, fdia, fmes, ihr, fhr
+character(len=4)::anio
 
-NAMELIST /FECHA/ ihr, idia, imes,fhr, fdia, fmes
+NAMELIST /FECHA/ anio,ihr, idia, imes,fhr, fdia, fmes
 common /STATIONS/ lon,lat,msn,id_name,Message_type
-end module variables
-
-program  rama2metv2
-     use variables
-
-    call lee_nml
-
-    call lee
-
-    call guarda
-
 contains
-!
 subroutine lee_nml
     logical existe
     existe = .FALSE.
@@ -57,6 +46,20 @@ subroutine lee_nml
             stop '***** No namelist.met'
         ENDIF
 end subroutine lee_nml
+end module variables
+
+program  rama2metv2
+     use variables
+
+    call lee_nml
+
+    call lee
+
+    call guarda
+
+contains
+!
+
 !
 subroutine guarda
     implicit none
@@ -68,20 +71,20 @@ subroutine guarda
     character(len=10)::fecha
     character(len=5) hora
     character(len=15) ::cfecha
-    character(len=3) c_id,cvar
+    character(len=3):: c_id,cvar
     salir=.true.
     sigue=.false.
     Message_type='ADPSFC'
-    fname ='meteorologia_2017.csv'
-    fname2='contaminantes_2017.csv'
+    fname ='meteorologia_'//anio//'.csv'
+    fname2='contaminantes_'//anio//'.csv'
     open (unit=12,file=fname ,status='old',action='read')
     open (unit=13,file=fname2,status='old',action='read')
     do i=1,11
        read(12,*) cdum
        read(13,*) cdum
     end do
-    open (unit=20,file='rama2017_met.txt')
-    open (unit=21,file='rama2017_pol.txt')
+    open (unit=20,file='rama'//anio//'_met.txt')
+    open (unit=21,file='rama'//anio//'_pol.txt')
      I=0
     do while (salir)
     rval=rnulo
@@ -94,19 +97,19 @@ subroutine guarda
       do j=1,n_rama
         if(c_id.eq.id_name(j).and.rval.ne.rnulo)then
           write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),ivar,776.,10.,1,rval
-! vientos
-           if(ivar.eq.31 .or. ivar.eq.32)then
-             call viento(ivar,rval,sigue,uw,vw)
-             if (uw.ne.rnulo.and.sigue) then
-       write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),33,776.,10.,1,uw
-       write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),34,776.,10.,1,vw
-             uw=rnulo
-             sigue=.false.
-             end if
-             end if
-! vientos fin
-          exit
+        ! vientos
+        if(ivar.eq.31 .or. ivar.eq.32)then
+            call viento(ivar,rval,sigue,uw,vw)
+            if (uw.ne.rnulo.and.sigue) then
+                write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),33,776.,10.,1,uw
+                write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),34,776.,10.,1,vw
+                uw=rnulo
+                sigue=.false.
+            end if
         end if
+        ! vientos fin
+         exit
+        end if ! per station
       end do
     end if ! fecha
    if(fecha(4:5).eq.fmes.and. hora(1:2).eq.fhr.and.trim(cvar).eq."PBa") salir=.false.
@@ -172,8 +175,8 @@ character(len=15) function fconvert(fecha,hora)
 integer,parameter :: isf=5
 integer,parameter :: if2=24-isf
 integer :: ih,idia,imes,ianio
-character(len=10) fecha
-character (len=5) hora
+character(len=10),intent(IN):: fecha
+character (len=5),intent(IN):: hora
 character (len=2) dia,mes,chora
 character (len=4) anio
 
