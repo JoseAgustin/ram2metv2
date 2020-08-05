@@ -70,13 +70,13 @@ subroutine viento(ival,rval,sigue,uw,vw)
     if(rval.eq.rnulo) return
     if(ival.eq.31) dir=rval
     if(ival.eq.32) then
-     uw=rval*sin(deg2rad*(180+dir))
-     vw=rval*cos(deg2rad*(180+dir))
+     uw=-rval*sin(deg2rad*(dir))
+     vw=-rval*cos(deg2rad*(dir))
      sigue=.true.
     end if
     return
 end subroutine viento
-!>  @brief converts text date to integers
+!>  @brief reformat date and time from DD-MM-YYYY HH:MM to YYYYMMDD_HHMMSS
 !>  @author Jose Agustin Garcia Reynoso
 !>  @date 08/02/2020
 !>  @version  2.0
@@ -155,7 +155,11 @@ WRITE(fconvert,'(I4,I2.2,I2.2,"_",I2.2,"0000")')ianio,imes,idia,ih
 !print *,fconvert
 return
 end function fconvert
-!>  @brief converts textt variable to its Grib_Code
+!>  @brief converts text variable to its Grib_Code
+!>  from: https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html
+!>  Meterological variables Table 128.
+!>  Particlulate Matter (coarse and fine) and ozone Table 129
+!>  NO, NO2, CO and SO2 Table 141
 !>  @author Jose Agustin Garcia Reynoso
 !>  @date 08/02/2020
 !>  @version  2.0
@@ -305,10 +309,10 @@ subroutine guarda
 !  4 Lat in degrees North
 !  5 lon in degrees East
 !  6 Elevation in meters above sea level
-!  7 Grib_Code corresponding to this observation type
+!  7 Grib_Code as the integer GRIB code value or variable name corresponding to this observation type
 !  8 Level as the pressure level in hPa or accumulation interval in hours
 !  9 Height in msl or agl of the observation value
-! 10 QC_String Quality control value
+! 10 QC_String Quality character(len=*) :: orresponding to the quality control value
 ! 11 Observation_Value in the units prescribed for the grib code
 
 100 format (A10,a5,A3,A,F)
