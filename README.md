@@ -1,9 +1,12 @@
-# Conversion of Air quality Measured data to be use for model evaluation
+# Air Quality Measured Data Reformat for Model Evaluation
 (RAMA2MET Tool v2.0)
 
+[[Model Evaluation](https://dtcenter.org/community-code/model-evaluation-tools-met)]
+[[ascii2nc](https://dtcenter.org/met-online-tutorial-metv8-0/point-processing-tool/ascii2nc)]
+[WRF-chem](https://ruc.noaa.gov/wrf/wrf-chem/) [RAMA](http://www.aire.cdmx.gob.mx/default.php)
 
 ## Background
-Strategies for air quality improvement requieres the use of  air quality numerical models. The statistical tools that can provide objective comparison between models results and air quality measurements are important.  One of those verification packages is the [Model Evaluation Tools ([MET]) ] with it is possible to compare results from air quality models such WRF-chem ![Grell et al. 2005][GRELL2005] and observations from air quality networks such as [RAMA] in Mexico City.
+Strategies for air quality improvement requieres the use of  air quality numerical models. The statistical tools that can provide objective comparison between models results and air quality measurements are important.  One of those verification packages is the [Model Evaluation Tools ([MET]) ] with it is possible to compare results from air quality models such WRF-chem [Grell_2005] and observations from air quality networks such as [RAMA] in Mexico City.
 
 However the format requiered for the MET suite is not the format provided by the  air quality network database. This code provide a way to reformat RAMA data base into MET ascii format in order to be used in **ascii2nc**  tool for providing the data to _pointstat_ for computing the different statistical metrics.
 
@@ -28,7 +31,7 @@ Meteorological data and chemical trace gases are measured at ground level then t
 
  Information about statios are obtained from reading the file _est_rama.txt_ , it has the Station_ID, Lat, Lon and  Elevation
 
-    Alias    Latitud     Longitud    Altitud    Estacion (41)
+    Alias    Latitud     Longitud    Altitud    Estacion (56)
     ACO    19.635501    -98.912003    2198    Acolman
     AJU    19.154286    -99.162611    2942    Ajusco
 
@@ -37,7 +40,7 @@ For Mexico City the pressure level is on average 776. hPa
 
 Stations measured it variables at 10 m above ground level.
 
-The ![GRIB][grib128]  table contains a set of tables with the codes for each variable in order to map the variable to its description, units and abbreviature. In addition to the meteorological variables the chemical gas traces are  also considered. The following tables used and variables considered are presented. The grib codes follows the guide from World Meteorological Organization [WMO].
+The [GRIB][gribt]  table contains a set of tables with the codes for each variable in order to map the variable to its description, units and abbreviature. In addition to the meteorological variables the chemical gas traces are  also considered. The following tables used and variables considered are presented. The grib codes follows the guide from World Meteorological Organization [WMO].
 
 ### Table 128
 |Value| Parameter|Units| ABBREV.|
@@ -55,8 +58,8 @@ The ![GRIB][grib128]  table contains a set of tables with the codes for each var
 |Value| Parameter|Units| ABBREV.|
 |---| --- | --- |--- |
 |156 | Particulate matter (coarse) |  ug/m^3 | PMTC|
-|157 |  Particulate matter (fine) |  ppb | PMTF|
-|180 | Ozone concentration |  ppb | OZCON|
+|157 |  Particulate matter (fine) | ug/m^3 | PMTF|
+|180 | Ozone concentration |  ppbv | OZCON|
 
 ### Table 141
 
@@ -73,30 +76,30 @@ This mapping is performed in _vconvert_ subroutine.
 The RAMA database contains wind speed and wind direction, the meteorological model provides wind componens in W-E and S-N directions. A conversion from vector to it components for wind use the following equations:
 
 
-    u = -S SIN( DD)
+    u = -S SIN(DD)
     v = -S COS(DD)
 
 
 where
-* u - eastward wind component (m/s)
-* v - northward wind component (m/s)
-* S - wind speed (m/s)
-* DD -- Wind direction (from which blowing) deg
+ * u - eastward wind component (m/s)
+ * v - northward wind component (m/s)
+ * S - wind speed (m/s)
+ * DD -- Wind direction (from which blowing) deg
 
 This computations are performed in _viento_ subroutine
 
-For RAMA files the date and time are in one column separated by one space,  the date in DD-MM-YYYY and  time  HH:MM subroutine _fconvert_ reedit the date to YYYYMMDD_HHMMSS format and computes the change from  the GMT-6 time zone to GMT.
+For RAMA files the date and time are in one column separated by one space, the date in DD-MM-YYYY and  time  HH:MM subroutine _fconvert_ reformat the date to YYYYMMDD_HHMMSS  and computes the cpnversion from GMT-6 time zone to GMT.
 
 Because the air quality networ in Mexico City publish data after a QA/QC process the QC flags is set to 1.
 
 ## References
 
-[grib128]:https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html
+[gribt]:https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html
 [MET]: https://dtcenter.org/community-code/model-evaluation-tools-met
 [RAMA]:  http://www.aire.cdmx.gob.mx/default.php?opc=%27aKBhnmI=%27&opcion=Zg==
 [WMO]: https://www.wmo.int/pages/prog/www/WMOCodes/Guides/GRIB/GRIB1-Contents.html#GRIB
 
-[GRELL2005]: Grell, G.A., Peckham, S.E., Schmitz, R., McKeen, S.A., Frost, G.J., Skamarock, W.C., & Eder, B.K. (2005). Fully coupled "online" chemistry within the WRF model. _Atmospheric Environment_, **39**, 6957-6975.
+[Grell_2005]: Grell, G.A., Peckham, S.E., Schmitz, R., McKeen, S.A., Frost, G.J., Skamarock, W.C., & Eder, B.K. (2005). Fully coupled "online" chemistry within the WRF model. _Atmospheric Environment_, **39**, 6957-6975.
 
 
 @article{GRELL20056957,
