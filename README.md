@@ -40,10 +40,10 @@ For Mexico City the pressure level is on average 776. hPa
 
 Stations measured it variables at 10 m above ground level.
 
-The [GRIB][gribt]  table contains a set of tables with the codes for each variable in order to map the variable to its description, units and abbreviature. In addition to the meteorological variables the chemical gas traces are  also considered. The following tables used and variables considered are presented. The grib codes follows the guide from World Meteorological Organization [WMO].
+The [GRIB][gribt]  site contains a set of Parameter tables versions with the codes for each variable in order to map the variable to its description, units and abbreviation. In addition to the meteorological variables the chemical trace gases  are also considered. The following tables used and variables considered are presented. The grib codes follows the guide from World Meteorological Organization [WMO].
 
 ### Table 128
-|Value| Parameter|Units| ABBREV.|
+|Value| Parameter|Units| Abbrev.|
 |---| --- | --- |--- |
 001 | Pressure | Pa| PRES|
 |011| Temperature|K|TEMP|
@@ -70,15 +70,13 @@ The [GRIB][gribt]  table contains a set of tables with the codes for each variab
 |148|Carbon Monoxide| ppbv |CO|
 |232| Sulfur Dioxide| ppbv |SO2|
 
-This mapping is performed in _vconvert_ subroutine.
+This mapping between text variable and grib code is performed in _vconvert_ subroutine.
 
 ### Wind components
-The RAMA database contains wind speed and wind direction, the meteorological model provides wind componens in W-E and S-N directions. A conversion from vector to it components for wind use the following equations:
-
+The RAMA database contains wind speed and wind direction, the meteorological model provides wind components in W-E and S-N directions. A conversion from vector to it components for wind use the following equations:
 
     u = -S SIN(DD)
     v = -S COS(DD)
-
 
 where
  * u - eastward wind component (m/s)
@@ -88,9 +86,9 @@ where
 
 This computations are performed in _viento_ subroutine
 
-For RAMA files the date and time are in one column separated by one space, the date in DD-MM-YYYY and  time  HH:MM subroutine _fconvert_ reformat the date to YYYYMMDD_HHMMSS  and computes the cpnversion from GMT-6 time zone to GMT.
+For RAMA files the date and time are in one column separated by one space, the date in DD-MM-YYYY and  time  HH:MM subroutine _fconvert_ reformat the date to YYYYMMDD_HHMMSS  and computes the conversion from GMT-6 time zone to GMT.
 
-Because the air quality networ in Mexico City publish data after a QA/QC process the QC flags is set to 1.
+Because the air quality network in Mexico City publish data after a QA/QC process the QC flags is set to 1.
 
 ## References
 
@@ -100,18 +98,3 @@ Because the air quality networ in Mexico City publish data after a QA/QC process
 [WMO]: https://www.wmo.int/pages/prog/www/WMOCodes/Guides/GRIB/GRIB1-Contents.html#GRIB
 
 [Grell_2005]: Grell, G.A., Peckham, S.E., Schmitz, R., McKeen, S.A., Frost, G.J., Skamarock, W.C., & Eder, B.K. (2005). Fully coupled "online" chemistry within the WRF model. _Atmospheric Environment_, **39**, 6957-6975.
-
-
-@article{GRELL20056957,
-title = "Fully coupled “online” chemistry within the WRF model",
-journal = "Atmospheric Environment",
-volume = "39",
-number = "37",
-pages = "6957 - 6975",
-year = "2005",
-issn = "1352-2310",
-doi = "https://doi.org/10.1016/j.atmosenv.2005.04.027",
-url = "http://www.sciencedirect.com/science/article/pii/S1352231005003560",
-author = "Georg A. Grell and Steven E. Peckham and Rainer Schmitz and Stuart A. McKeen and Gregory Frost and William C. Skamarock and Brian Eder",
-keywords = "Urban and regional pollution, Urban and regional air quality modeling, Air quality forecasting, Aerosols and particles",
-abstract = "A fully coupled “online” Weather Research and Forecasting/Chemistry (WRF/Chem) model has been developed. The air quality component of the model is fully consistent with the meteorological component; both components use the same transport scheme (mass and scalar preserving), the same grid (horizontal and vertical components), and the same physics schemes for subgrid-scale transport. The components also use the same timestep, hence no temporal interpolation is needed. The chemistry package consists of dry deposition (“flux-resistance” method), biogenic emission as in [Simpson et al., 1995. Journal of Geophysical Research 100D, 22875–22890; Guenther et al., 1994. Atmospheric Environment 28, 1197–1210], the chemical mechanism from RADM2, a complex photolysis scheme (Madronich scheme coupled with hydrometeors), and a state of the art aerosol module (MADE/SORGAM aerosol parameterization). The WRF/Chem model is statistically evaluated and compared to MM5/Chem and to detailed photochemical data collected during the summer 2002 NEAQS field study. It is shown that the WRF/Chem model is statistically better skilled in forecasting O3 than MM5/Chem, with no appreciable differences between models in terms of bias with the observations. Furthermore, the WRF/Chem model consistently exhibits better skill at forecasting the O3 precursors CO and NOy at all of the surface sites. However, the WRF/Chem model biases of these precursors and of other gas-phase species are persistently higher than for MM5/Chem, and are most often biased high compared to observations. Finally, we show that the impact of other basic model assumptions on these same statistics can be much larger than the differences caused by model differences. An example showing the sensitivity of various statistical measures with respect to the treatment of biogenic volatile organic compounds emissions illustrates this impact."
