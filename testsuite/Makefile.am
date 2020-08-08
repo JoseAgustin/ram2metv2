@@ -2,9 +2,9 @@
 # This file is processed by automake (produces file Makefile.in)
 #
 AUTOMAKE_OPTIONS = subdir-objects
-TEST = test1 test2 test3 test4 test5 test6
+TEST = test1 test2 test3 test4 test5 test6 test7 test8
 
-check_PROGRAMS= test1 test2 test3 test4 test5 test6
+check_PROGRAMS= test1 test2 test3 test4 test5 test6 test7 test8
 
 test1_SOURCES = $(top_builddir)/module_rama2met.F90 test1.F90
 test2_SOURCES = $(top_builddir)/module_rama2met.F90 test2.F90
@@ -12,6 +12,8 @@ test3_SOURCES = $(top_builddir)/module_rama2met.F90 test3.F90
 test4_SOURCES = $(top_builddir)/module_rama2met.F90 test4.F90
 test5_SOURCES = $(top_builddir)/module_rama2met.F90 test5.F90
 test6_SOURCES = $(top_builddir)/module_rama2met.F90 test6.F90
+test7_SOURCES = $(top_builddir)/module_rama2met.F90 test7.F90
+test8_SOURCES = $(top_builddir)/module_rama2met.F90 test8.F90
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

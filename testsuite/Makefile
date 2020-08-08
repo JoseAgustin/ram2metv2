@@ -86,7 +86,8 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 check_PROGRAMS = test1$(EXEEXT) test2$(EXEEXT) test3$(EXEEXT) \
-	test4$(EXEEXT) test5$(EXEEXT) test6$(EXEEXT)
+	test4$(EXEEXT) test5$(EXEEXT) test6$(EXEEXT) test7$(EXEEXT) \
+	test8$(EXEEXT)
 subdir = testsuite
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -121,6 +122,14 @@ am_test6_OBJECTS = $(top_builddir)/module_rama2met.$(OBJEXT) \
 	test6.$(OBJEXT)
 test6_OBJECTS = $(am_test6_OBJECTS)
 test6_LDADD = $(LDADD)
+am_test7_OBJECTS = $(top_builddir)/module_rama2met.$(OBJEXT) \
+	test7.$(OBJEXT)
+test7_OBJECTS = $(am_test7_OBJECTS)
+test7_LDADD = $(LDADD)
+am_test8_OBJECTS = $(top_builddir)/module_rama2met.$(OBJEXT) \
+	test8.$(OBJEXT)
+test8_OBJECTS = $(am_test8_OBJECTS)
+test8_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -148,9 +157,11 @@ am__v_FCLD_ = $(am__v_FCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_FCLD_0 = @echo "  FCLD    " $@;
 am__v_FCLD_1 = 
 SOURCES = $(test1_SOURCES) $(test2_SOURCES) $(test3_SOURCES) \
-	$(test4_SOURCES) $(test5_SOURCES) $(test6_SOURCES)
+	$(test4_SOURCES) $(test5_SOURCES) $(test6_SOURCES) \
+	$(test7_SOURCES) $(test8_SOURCES)
 DIST_SOURCES = $(test1_SOURCES) $(test2_SOURCES) $(test3_SOURCES) \
-	$(test4_SOURCES) $(test5_SOURCES) $(test6_SOURCES)
+	$(test4_SOURCES) $(test5_SOURCES) $(test6_SOURCES) \
+	$(test7_SOURCES) $(test8_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -271,13 +282,15 @@ top_srcdir = ..
 # This file is processed by automake (produces file Makefile.in)
 #
 AUTOMAKE_OPTIONS = subdir-objects
-TEST = test1 test2 test3 test4 test5 test6
+TEST = test1 test2 test3 test4 test5 test6 test7 test8
 test1_SOURCES = $(top_builddir)/module_rama2met.F90 test1.F90
 test2_SOURCES = $(top_builddir)/module_rama2met.F90 test2.F90
 test3_SOURCES = $(top_builddir)/module_rama2met.F90 test3.F90
 test4_SOURCES = $(top_builddir)/module_rama2met.F90 test4.F90
 test5_SOURCES = $(top_builddir)/module_rama2met.F90 test5.F90
 test6_SOURCES = $(top_builddir)/module_rama2met.F90 test6.F90
+test7_SOURCES = $(top_builddir)/module_rama2met.F90 test7.F90
+test8_SOURCES = $(top_builddir)/module_rama2met.F90 test8.F90
 TESTSUITE = $(srcdir)/testsuite
 AUTOTEST = $(AUTOM4TE) --language=autotest
 EXTRA_DIST = README.md $(TESTSUITE)
@@ -350,6 +363,14 @@ test5$(EXEEXT): $(test5_OBJECTS) $(test5_DEPENDENCIES) $(EXTRA_test5_DEPENDENCIE
 test6$(EXEEXT): $(test6_OBJECTS) $(test6_DEPENDENCIES) $(EXTRA_test6_DEPENDENCIES) 
 	@rm -f test6$(EXEEXT)
 	$(AM_V_FCLD)$(FCLINK) $(test6_OBJECTS) $(test6_LDADD) $(LIBS)
+
+test7$(EXEEXT): $(test7_OBJECTS) $(test7_DEPENDENCIES) $(EXTRA_test7_DEPENDENCIES) 
+	@rm -f test7$(EXEEXT)
+	$(AM_V_FCLD)$(FCLINK) $(test7_OBJECTS) $(test7_LDADD) $(LIBS)
+
+test8$(EXEEXT): $(test8_OBJECTS) $(test8_DEPENDENCIES) $(EXTRA_test8_DEPENDENCIES) 
+	@rm -f test8$(EXEEXT)
+	$(AM_V_FCLD)$(FCLINK) $(test8_OBJECTS) $(test8_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

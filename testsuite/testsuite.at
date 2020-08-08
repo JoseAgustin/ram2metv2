@@ -3,7 +3,7 @@
 AT_INIT([RADM2MET])
 AT_BANNER([***** Module subroutines and functions Testing Suite  *****])
 
-AT_SETUP([wind components])
+AT_SETUP([Log printing])
 AT_TESTED(test1)
 AT_CLEANUP
 
@@ -26,3 +26,12 @@ AT_CLEANUP
 AT_SETUP([Reads met and pollutant files])
 AT_TESTED(test6)
 AT_CLEANUP
+
+AT_SETUP([cuenta rows in file])
+AT_TESTED(test7)
+AT_CLEANUP
+
+AT_SETUP([wind components])
+AT_TESTED(test8)
+AT_CLEANUP
+

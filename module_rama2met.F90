@@ -35,7 +35,7 @@ subroutine lee_nml
     integer ::unit_nml
     logical :: existe
     existe = .FALSE.
-    write(6,*)' >>>> Reading file - namelist.met'
+    call logs('Start reading file - namelist.met')
     inquire ( FILE = 'namelist.met' , EXIST = existe )
         if ( existe ) then
         !  Opening the file.
@@ -158,8 +158,8 @@ end function fconvert
 !>  @brief converts text variable to its Grib_Code
 !>  from: https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html
 !>  Meterological variables Table 128.
-!>  Particlulate Matter (coarse and fine) and ozone Table 129
-!>  NO, NO2, CO and SO2 Table 141
+!>  Particlulate Matter (coarse and fine) and ozone Table 129.
+!>  NO, NO2, CO, OC (PMCO) and SO2 Table 141
 !>  @author Jose Agustin Garcia Reynoso
 !>  @date 08/02/2020
 !>  @version  2.0
@@ -169,7 +169,7 @@ character (len=3),intent(IN) ::var
 character (len=3):: cvar
    cvar=trim(var)
    select case (cvar)
-    case ("PBa")
+    case ("PBa")   !Table 128
         vconvert=1
     case ("TMP")
         vconvert=11
@@ -179,9 +179,13 @@ character (len=3):: cvar
         vconvert=32
     case ("RH")
         vconvert=52
-    case ("O3")
+    case ("O3")     !Table 129
         vconvert=180
-    case ("CO")
+    case("PM1")
+        vconvert=156
+    case("PM2")
+        vconvert=157
+    case ("CO")     !Tablw 141
         vconvert=148
     case("SO2")
         vconvert=232
@@ -191,10 +195,8 @@ character (len=3):: cvar
         vconvert=141
     case("NO2")
         vconvert=142
-    case("PM1")
-        vconvert=156
-    case("PM2")
-        vconvert=157
+    case("PMC")
+        vconvert=249
     case DEFAULT
         vconvert=-99
    end select
@@ -210,7 +212,7 @@ implicit none
 integer i,j
 character(len=13) :: fname, cdum
 fname='est_rama.txt'
-print *,"   Lee ",fname
+call logs("Start reading file - "//fname)
 open (unit=11,file=fname,status='OLD',action='read')
 n_rama=cuenta(11)-1  !encabezado se contabiliza en cuenta
 allocate(id_name(n_rama),lat(n_rama),lon(n_rama),msn(n_rama))
@@ -240,6 +242,7 @@ subroutine guarda
     salir=.true.
     sigue=.false.
     Message_type='ADPSFC'
+    call logs("Start doing process")
     fname ='meteorologia_'//anio//'.csv'
     fname2='contaminantes_'//anio//'.csv'
     open (unit=12,file=fname ,status='old',action='read')
@@ -298,6 +301,7 @@ subroutine guarda
         end if ! fecha
     if(fecha(4:5).eq.fmes .and. hora(1:2).eq.fhr.and.trim(cvar).eq."SO2") salir=.false.
     end do  !while salir
+    call logs("END PROGRAM")
     close(12)
     close(13)
     close(20)
@@ -339,4 +343,16 @@ integer function  cuenta(iunit)
     rewind(iunit)
     return
 end
+!>  @brief disolay log during different program stages
+!>   @author  Jose Agustin Garcia Reynoso
+!>   @date  08/08/2020
+!>   @version  2.2
+!>   @copyright Universidad Nacional Autonoma de Mexico 2020
+!>   @param texto text to be displayed
+subroutine logs(texto)
+    implicit none
+    character(len=*),intent(in):: texto
+    write(6,333) texto
+333 format(3x,5("*"),x,A35,x,"******")
+end subroutine
 end module variables

@@ -55,7 +55,7 @@ The [GRIB][gribt]  site contains a set of Parameter tables versions with the cod
 
 ### Table 129
 
-|Value| Parameter|Units| ABBREV.|
+|Value| Parameter|Units| Abbrev.|
 |---| --- | --- |--- |
 |156 | Particulate matter (coarse) |  ug/m^3 | PMTC|
 |157 |  Particulate matter (fine) | ug/m^3 | PMTF|
@@ -63,12 +63,13 @@ The [GRIB][gribt]  site contains a set of Parameter tables versions with the cod
 
 ### Table 141
 
-|Value| Parameter|Units| ABBREV.|
+|Value| Parameter|Units| Abbrev.|
 |---| --- | --- |--- |
 |141| Nitrogen Oxide | ppbv |NO|
 |142| Nitrogen Dioxide | ppbv |NO2|
 |148|Carbon Monoxide| ppbv |CO|
 |232| Sulfur Dioxide| ppbv |SO2|
+|249| Hydrophobic Organic Carbon |OC|
 
 This mapping between text variable and grib code is performed in _vconvert_ subroutine.
 

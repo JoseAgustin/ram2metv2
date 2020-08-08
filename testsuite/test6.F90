@@ -11,7 +11,7 @@
 !>  @copyright Universidad Nacional Autonoma de Mexico
 program  rama2metv2
      use variables
-
+	call logs("Testing subroutine guarda")
     imes='01'
     anio='2020'
     call lee
