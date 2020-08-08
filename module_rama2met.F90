@@ -8,13 +8,13 @@
 !
 module variables
 !> No. stations in localization file
-integer,parameter:: n_rama=59 ;!>  value for missing value
+integer :: n_rama ;!>  value for missing value
 real,parameter:: rnulo=-9999. ;!>  localization logitude coordinate
-real,dimension(n_rama) :: lon ;!>  localization latitude coordinate
-real,dimension(n_rama) :: lat ;!>  meters above sea level of station
-real,dimension(n_rama) :: msn ;!>  message type
+real,allocatable  :: lon(:) ;!>  localization latitude coordinate
+real,allocatable  :: lat(:) ;!>  meters above sea level of station
+real,allocatable  :: msn(:) ;!>  message type
 character(len=6) :: Message_type  ;!> station short name for ID
-character(len=3),dimension(n_rama) :: id_name ;!> start day for output
+character(len=3),allocatable :: id_name(:) ;!> start day for output
 character(len=2):: idia ;!> start month for output
 character(len=2):: imes;!> end day for output
 character(len=2):: fdia ;!> end month for output
@@ -24,7 +24,7 @@ character(len=2):: fhr ;!> year fro input data
 character(len=4)::anio
 
 NAMELIST /FECHA/ anio,ihr, idia, imes,fhr, fdia, fmes
-common /STATIONS/ lon,lat,msn,id_name,Message_type
+common /STATIONS/n_rama,Message_type
 contains
 !>  @brief read namelist input file for selecting specific days
 !>  @author Jose Agustin Garcia Reynoso
@@ -212,6 +212,8 @@ character(len=13) :: fname, cdum
 fname='est_rama.txt'
 print *,"   Lee ",fname
 open (unit=11,file=fname,status='OLD',action='read')
+n_rama=cuenta(11)-1  !encabezado se contabiliza en cuenta
+allocate(id_name(n_rama),lat(n_rama),lon(n_rama),msn(n_rama))
 read (11,'(A)')cdum
 do i=1,n_rama
     read (11,*) id_name(i),lat(i),lon(i),msn(i)
@@ -318,4 +320,23 @@ subroutine guarda
 100 format (A10,a5,A3,A,F)
 300 continue
 end subroutine guarda
+!>  @brief count the number of rowns in a file
+!>   @author  Jose Agustin Garcia Reynoso
+!>   @date  07/13/2020
+!>   @version  2.2
+!>   @copyright Universidad Nacional Autonoma de Mexico 2020
+!>   @param  iunit file unit where the count has to be made
+integer function  cuenta(iunit)
+    implicit none
+    integer,intent(IN) :: iunit
+    integer :: io
+    cuenta = 0
+    DO
+        READ(iunit,*,iostat=io)
+        IF (io/=0) EXIT
+        cuenta = cuenta + 1
+    END DO
+    rewind(iunit)
+    return
+end
 end module variables
