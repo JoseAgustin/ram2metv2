@@ -1,12 +1,9 @@
-#!/bin/csh
-
-# do_real.csh
-#
+#!/bin/sh
 #
 # Created by Agustin Garcia on 29/06/11.
 # Copyright 2011 CCA-UNAM. All rights reserved.
-
-imes=12
+anio=2020
+imes=1
 idia=1
 ihr=1
 
@@ -34,12 +31,13 @@ do
 if [[ ${imes} -lt 9 ]]; then
 cat << END_namelist >  namelist.met
 &FECHA
+anio=${anio}
 imes=0${imes}
 fmes=0${fmes}
 idia=0${idia}
 fdia=0${fdia}
-ihr=0${ihr}
-fhr=0${fhr}
+ihr=0${ihr} ! Start hour
+fhr=0${fhr} ! End hour
 /
 END_namelist
 fi
@@ -47,6 +45,7 @@ fi
 if [[ ${imes} -eq 9 ]]; then
 cat << END_namelist >  namelist.met
 &FECHA
+anio=${anio}
 imes=0${imes}
 fmes=${fmes}
 idia=0${idia}
@@ -60,6 +59,7 @@ fi
 if [[ ${imes} -eq 10 ]]; then
 cat << END_namelist >  namelist.met
 &FECHA
+anio=${anio}
 imes=${imes}
 fmes=${fmes}
 idia=0${idia}
@@ -73,12 +73,13 @@ fi
 if [[ ${imes} -ge 11 ]]; then
 cat << END_namelist >  namelist.met
 &FECHA
-imes=${imes}
-fmes=${fmes}
-idia=0${idia}
-fdia=0${fdia}
-ihr=0${ihr}
-fhr=0${fhr}
+anio=${anio} ! Year from input data
+imes=${imes} ! Start month
+fmes=${fmes} ! End month
+idia=0${idia} ! Start day
+fdia=0${fdia} ! End day
+ihr=0${ihr}   ! Start hour
+fhr=0${fhr}   ! End hour
 /
 END_namelist
 fi
@@ -86,10 +87,10 @@ fi
     ./rama2met.exe
 
 if [[ ${imes} -lt 10 ]];
-then mv rama2011_met.txt rama2011_met_mes0${imes}.csv
-     mv rama2011_pol.txt rama2011_pol_mes0${imes}.csv
-else mv rama2011_met.txt rama2011_met_mes${imes}.csv
-     mv rama2011_pol.txt rama2011_pol_mes${imes}.csv
+then mv rama${anio}_met.txt rama${anio}_met_mes0${imes}.csv
+     mv rama${anio}_pol.txt rama${anio}_pol_mes0${imes}.csv
+else mv rama${anio}_met.txt rama${anio}_met_mes${imes}.csv
+     mv rama${anio}_pol.txt rama${anio}_pol_mes${imes}.csv
 fi
 
 imes=$(( $imes + 1 ))

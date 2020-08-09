@@ -12,16 +12,16 @@ integer :: n_rama ;!>  value for missing value
 real,parameter:: rnulo=-9999. ;!>  localization logitude coordinate
 real,allocatable  :: lon(:) ;!>  localization latitude coordinate
 real,allocatable  :: lat(:) ;!>  meters above sea level of station
-real,allocatable  :: msn(:) ;!>  message type
-character(len=6) :: Message_type  ;!> station short name for ID
-character(len=3),allocatable :: id_name(:) ;!> start day for output
+real,allocatable  :: msn(:) ;!> station short name for ID
+character(len=3),allocatable :: id_name(:);!> year from input data
+character(len=4):: anio ;!> start day for output
 character(len=2):: idia ;!> start month for output
 character(len=2):: imes;!> end day for output
 character(len=2):: fdia ;!> end month for output
 character(len=2):: fmes ;!> start hour for output
 character(len=2):: ihr ;!> end hour for output
-character(len=2):: fhr ;!> year fro input data
-character(len=4)::anio
+character(len=2):: fhr ;!>  message type
+character(len=6):: Message_type
 
 NAMELIST /FECHA/ anio,ihr, idia, imes,fhr, fdia, fmes
 common /STATIONS/n_rama,Message_type
@@ -157,9 +157,11 @@ return
 end function fconvert
 !>  @brief converts text variable to its Grib_Code
 !>  from: https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html
-!>  Meterological variables Table 128.
-!>  Particlulate Matter (coarse and fine) and ozone Table 129.
-!>  NO, NO2, CO, OC (PMCO) and SO2 Table 141
+!>   |Variables | Table|
+!>   | --- | ---|
+!>   | Meterological variables PBa, TMP, WDR, WSP, RH|  128 |
+!>   | Particlulate Matter (coarse and fine) and ozone | 129|
+!>   | NO, NO2, CO, OC (PMCO) and SO2 | 141|
 !>  @author Jose Agustin Garcia Reynoso
 !>  @date 08/02/2020
 !>  @version  2.0
@@ -308,19 +310,20 @@ subroutine guarda
     close(21)
 120   format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
 121   format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
-
-!  1 Message_type
-!  2 Station_ID
-!  3 Valid_Time in YYYYMMDD_HHMMSS format
-!  4 Lat in degrees North
-!  5 lon in degrees East
-!  6 Elevation in meters above sea level
-!  7 Grib_Code as the integer GRIB code value or variable name corresponding to this observation type
-!  8 Level as the pressure level in hPa or accumulation interval in hours
-!  9 Height in msl or agl of the observation value
-! 10 QC_String Quality character(len=*) :: orresponding to the quality control value
-! 11 Observation_Value in the units prescribed for the grib code
-
+!>  MET format has the following columns \cite brown2009model
+!>
+!> 1. Message_type
+!> 2. Station_ID
+!> 3. Valid_Time in YYYYMMDD_HHMMSS format
+!> 4. Lat in degrees North
+!> 5. lon in degrees East
+!> 6. Elevation in meters above sea level
+!> 7. Grib_Code as the integer GRIB code value or variable name corresponding to this observation type
+!> 8. Level as the pressure level in hPa or accumulation interval in hours
+!> 9. Height in msl or agl of the observation value
+!> 10. QC_String Quality character(len=*) :: corresponding to the quality control value
+!> 11. Observation_Value in the units prescribed for the grib code
+!>
 100 format (A10,a5,A3,A,F)
 300 continue
 end subroutine guarda
@@ -343,7 +346,7 @@ integer function  cuenta(iunit)
     rewind(iunit)
     return
 end
-!>  @brief disolay log during different program stages
+!>  @brief display log during different program stages
 !>   @author  Jose Agustin Garcia Reynoso
 !>   @date  08/08/2020
 !>   @version  2.2
