@@ -7,12 +7,12 @@ ___
 [WRF-chem](https://ruc.noaa.gov/wrf/wrf-chem/) [RAMA](http://www.aire.cdmx.gob.mx/default.php)
 ___
 ## Background
-Strategies for air quality improvement requieres the use of  air quality numerical models. The statistical tools that can provide objective comparison between models results and air quality measurements are important.  One of those verification packages is the [Model Evaluation Tools ([MET]) ] with it is possible to compare results from air quality models such WRF-chem Grell et al 2005 [^1] and observations from air quality networks such as [RAMA] in Mexico City.
+Strategies for air quality improvement requieres the use of  air quality numerical models. The statistical tools that can provide objective comparison between models results and air quality measurements are important.  One of those verification packages is the Model Evaluation Tools ([MET]) with it is possible to compare results from air quality models such WRF-chem [Grell et al 2005][^1] and observations from air quality networks such as [RAMA] in Mexico City.
 
 However the format requiered for the MET suite is not the format provided by the  air quality network database. This code provide a way to reformat RAMA data base into MET ascii format in order to be used in **ascii2nc**  tool for providing the data to _pointstat_ for computing the different statistical metrics.
 ___
 ## Summary
-This code reads, computes wind vectors, identifies the grib code and reformat the air quality data into METv5 ascii format. _This software was developed for an specific input ascii format however fuctions and subroutines can be used to convert other databases._
+This code reads, computes wind vectors, identifies the grib code and reformat the air quality data into [METv5][MET] ascii format. _This software was developed for an specific input ascii format however fuctions and subroutines can be used to convert other databases._
 
 The MET ascii format has 11 columns it contains one point observation per line. Each row in the file has the following data in columns:
 
@@ -22,7 +22,7 @@ The MET ascii format has 11 columns it contains one point observation per line. 
 4. Lat in degrees North
 5. Lon in degrees East
 6. Elevation in meters above sea level
-7. Grib_Code as the integer GRIB code value or variable name corresponding to this observation type
+7. Grib_Code as the integer [GRIB][gribt] code value or variable name corresponding to this observation type
 8. Level as the pressure level in hPa or accumulation interval in hours
 9. Height in meters above sea level or above ground level
 10. QC_String corresponding to the quality control value
