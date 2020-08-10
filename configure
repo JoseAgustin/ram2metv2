@@ -582,7 +582,7 @@ PACKAGE_TARNAME='rama2met'
 PACKAGE_VERSION='v2.0'
 PACKAGE_STRING='rama2met v2.0'
 PACKAGE_BUGREPORT='agustin@atmosfera.unam.mx'
-PACKAGE_URL=''
+PACKAGE_URL='https://github.com/JoseAgustin/rama2met'
 
 ac_default_prefix=`pwd`
 ac_subst_vars='am__EXEEXT_FALSE
@@ -1330,6 +1330,7 @@ Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
 
 Report bugs to <agustin@atmosfera.unam.mx>.
+rama2met home page: <https://github.com/JoseAgustin/rama2met>.
 _ACEOF
 ac_status=$?
 fi
@@ -1870,10 +1871,8 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-am__api_version='1.16'
-
 ac_aux_dir=
-for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
+for ac_dir in autotools "$srcdir"/autotools; do
   if test -f "$ac_dir/install-sh"; then
     ac_aux_dir=$ac_dir
     ac_install_sh="$ac_aux_dir/install-sh -c"
@@ -1889,7 +1888,7 @@ for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
   fi
 done
 if test -z "$ac_aux_dir"; then
-  as_fn_error $? "cannot find install-sh, install.sh, or shtool in \"$srcdir\" \"$srcdir/..\" \"$srcdir/../..\"" "$LINENO" 5
+  as_fn_error $? "cannot find install-sh, install.sh, or shtool in autotools \"$srcdir\"/autotools" "$LINENO" 5
 fi
 
 # These three variables are undocumented and unsupported,
@@ -1900,6 +1899,9 @@ ac_config_guess="$SHELL $ac_aux_dir/config.guess"  # Please don't use this var.
 ac_config_sub="$SHELL $ac_aux_dir/config.sub"  # Please don't use this var.
 ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
+
+
+am__api_version='1.16'
 
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -2478,6 +2480,7 @@ END
   fi
 fi
 
+# Initialize the test suite.
 ac_config_commands="$ac_config_commands testsuite/atconfig"
 
 
@@ -3697,6 +3700,7 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
+
 # Set language for configuration checks
 ac_ext=${ac_fc_srcext-f}
 ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
@@ -3966,13 +3970,14 @@ ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
 ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_fc_compiler_gnu
 
+
 ac_ext=${ac_fc_srcext-f}
 ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
 ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_fc_compiler_gnu
 
-ac_config_files="$ac_config_files Makefile testsuite/Makefile"
 
+ac_config_files="$ac_config_files Makefile testsuite/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4591,7 +4596,8 @@ $config_files
 Configuration commands:
 $config_commands
 
-Report bugs to <agustin@atmosfera.unam.mx>."
+Report bugs to <agustin@atmosfera.unam.mx>.
+rama2met home page: <https://github.com/JoseAgustin/rama2met>."
 
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
@@ -5306,8 +5312,14 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
+
+# Write configuration on the screen
 { $as_echo "$as_me:${as_lineno-$LINENO}: ---------------------------------------------------------" >&5
 $as_echo "$as_me: ---------------------------------------------------------" >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: Configuration complete - $PACKAGE_NAME-$PACKAGE_VERSION " >&5
+$as_echo "$as_me: Configuration complete - $PACKAGE_NAME-$PACKAGE_VERSION " >&6;}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: " >&5
+$as_echo "$as_me: " >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}: Fortran compiler:           FC=$FC" >&5
 $as_echo "$as_me: Fortran compiler:           FC=$FC" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}: Fortran flags:              FCFLAGS=$FCFLAGS" >&5
@@ -5320,4 +5332,3 @@ $as_echo "$as_me: Executables install prefix: --exec_prefix=$exec_prefix" >&6;}
 $as_echo "$as_me: Binary directory:           --bindir=$bindir" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}: ---------------------------------------------------------" >&5
 $as_echo "$as_me: ---------------------------------------------------------" >&6;}
-

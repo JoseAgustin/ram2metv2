@@ -4,7 +4,7 @@ AT_INIT([RADM2MET])
 AT_BANNER([***** Module subroutines and functions Testing Suite  *****])
 
 AT_SETUP([Log printing])
-AT_TESTED(test1)
+AT_TESTED( test1 test5 test8)
 AT_CLEANUP
 
 AT_SETUP([READS namelist])
@@ -20,6 +20,20 @@ AT_TESTED(test4)
 AT_CLEANUP
 
 AT_SETUP([Reads stations file])
+AT_DATA([est_rama.txt],[Alias   Latitud         Longitud        Altitud Estacion (41)
+ACO     19.635501       -98.912003      2198    Acolman
+AJU     19.154286       -99.162611      2942    Ajusco (Antes Parres-PAR)
+AJM     19.272083       -99.20758       2619    Ajusco Medio
+ATI     19.576963       -99.254133      2341    Atizap<87>n de Zaragoza
+BJU     19.3716228      -99.1404083     2240    Benito Juarez
+CAM     19.468404       -99.169794      2233    Camarones
+CCA     19.326200       -99.17610       2280    Centro de Ciencias de la Atmosfera
+TEC     19.487227       -99.114229      2265    Cerro de Tepeyac
+CHO     19.266948       -98.886088      2253    Chalco
+COR     19.265346       -99.02604       2242    CORENA
+COY     19.350258       -99.157101      2260    Coyoacan
+CUA     19.365313       -99.291705      2704    Cuajimalpa
+])
 AT_TESTED(test5)
 AT_CLEANUP
 

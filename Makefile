@@ -175,8 +175,11 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.in compile depcomp install-sh \
-	missing
+am__DIST_COMMON = $(srcdir)/Makefile.in \
+	$(top_srcdir)/autotools/compile \
+	$(top_srcdir)/autotools/install-sh \
+	$(top_srcdir)/autotools/missing autotools/compile \
+	autotools/install-sh autotools/missing depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -219,28 +222,28 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /Users/agustin/proyectos/ram2metv2/missing aclocal-1.16
+ACLOCAL = ${SHELL} /Users/agustin/proyectos/ram2metv2/autotools/missing aclocal-1.16
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /Users/agustin/proyectos/ram2metv2/missing autoconf
-AUTOHEADER = ${SHELL} /Users/agustin/proyectos/ram2metv2/missing autoheader
-AUTOM4TE = ${SHELL} /Users/agustin/proyectos/ram2metv2/missing autom4te
-AUTOMAKE = ${SHELL} /Users/agustin/proyectos/ram2metv2/missing automake-1.16
+AUTOCONF = ${SHELL} /Users/agustin/proyectos/ram2metv2/autotools/missing autoconf
+AUTOHEADER = ${SHELL} /Users/agustin/proyectos/ram2metv2/autotools/missing autoheader
+AUTOM4TE = ${SHELL} /Users/agustin/proyectos/ram2metv2/autotools/missing autom4te
+AUTOMAKE = ${SHELL} /Users/agustin/proyectos/ram2metv2/autotools/missing automake-1.16
 AWK = awk
 CC = gcc
-CCDEPMODE = depmode=gcc3
+CCDEPMODE = depmode=none
 CFLAGS = -g -O2
 CPP = gcc -E
 CPPFLAGS = 
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"rama2met\" -DPACKAGE_TARNAME=\"rama2met\" -DPACKAGE_VERSION=\"v2.0\" -DPACKAGE_STRING=\"rama2met\ v2.0\" -DPACKAGE_BUGREPORT=\"agustin@atmosfera.unam.mx\" -DPACKAGE_URL=\"\" -DPACKAGE=\"rama2met\" -DVERSION=\"v2.0\"
+DEFS = -DPACKAGE_NAME=\"rama2met\" -DPACKAGE_TARNAME=\"rama2met\" -DPACKAGE_VERSION=\"v2.0\" -DPACKAGE_STRING=\"rama2met\ v2.0\" -DPACKAGE_BUGREPORT=\"agustin@atmosfera.unam.mx\" -DPACKAGE_URL=\"https://github.com/JoseAgustin/rama2met\" -DPACKAGE=\"rama2met\" -DVERSION=\"v2.0\"
 DEPDIR = .deps
 ECHO_C = \c
 ECHO_N = 
 ECHO_T = 
 EXEEXT = 
-FC = ifort
-FCFLAGS = -g -FR
+FC = gfortran
+FCFLAGS = -g -O2 -ffree-form
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -250,15 +253,15 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /Users/agustin/proyectos/ram2metv2/missing makeinfo
-MKDIR_P = ./install-sh -c -d
+MAKEINFO = ${SHELL} /Users/agustin/proyectos/ram2metv2/autotools/missing makeinfo
+MKDIR_P = autotools/install-sh -c -d
 OBJEXT = o
 PACKAGE = rama2met
 PACKAGE_BUGREPORT = agustin@atmosfera.unam.mx
 PACKAGE_NAME = rama2met
 PACKAGE_STRING = rama2met v2.0
 PACKAGE_TARNAME = rama2met
-PACKAGE_URL = 
+PACKAGE_URL = https://github.com/JoseAgustin/rama2met
 PACKAGE_VERSION = v2.0
 PATH_SEPARATOR = :
 SET_MAKE = 
@@ -270,7 +273,7 @@ abs_srcdir = /Users/agustin/proyectos/ram2metv2
 abs_top_builddir = /Users/agustin/proyectos/ram2metv2
 abs_top_srcdir = /Users/agustin/proyectos/ram2metv2
 ac_ct_CC = gcc
-ac_ct_FC = 
+ac_ct_FC = gfortran
 am__include = include
 am__leading_dot = .
 am__quote = 
@@ -288,7 +291,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /Users/agustin/proyectos/ram2metv2/install-sh
+install_sh = ${SHELL} /Users/agustin/proyectos/ram2metv2/autotools/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -308,13 +311,18 @@ target_alias =
 top_build_prefix = 
 top_builddir = .
 top_srcdir = .
+
+#
+# This file is processed by automake (produces file Makefile.in)
+#
+ACLOCAL_AMFLAGS = -I m4
 rama2met_exe_SOURCES = module_rama2met.F90 rama2metv2.F90
-TESTSUITE = $(srcdir)/testsuite
 
 # Additional files to be cleaned with 'make clean'
-CLEANFILES = *.o *.mod 
-EXTRA_DIST = est_rama.txt namelist.met README.md
+CLEANFILES = *.o *.mod
+TESTSUITE = $(srcdir)/testsuite
 SUBDIRS = . testsuite
+EXTRA_DIST = est_rama.txt namelist.met README.md
 all: all-recursive
 
 .SUFFIXES:
@@ -844,6 +852,9 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
+
+# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+$(srcdir)/testsuite/package.m4: $(top_srcdir)/configure.ac
 
 .PHONY: $(EXTRA_DIST)
 $(EXTRA_DIST):

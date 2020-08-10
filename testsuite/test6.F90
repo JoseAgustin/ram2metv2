@@ -12,10 +12,13 @@
 program  rama2metv2
      use variables
 	call logs("Testing subroutine guarda")
-    imes='01'
     anio='2020'
-    call lee
-
+    imes='01'
+    fmes='03'
+    idia='18'
+    fdia='23'
+    ihr='01'
+    fhr='07'
     call guarda
 
 end program

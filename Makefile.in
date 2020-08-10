@@ -175,8 +175,11 @@ ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.in compile depcomp install-sh \
-	missing
+am__DIST_COMMON = $(srcdir)/Makefile.in \
+	$(top_srcdir)/autotools/compile \
+	$(top_srcdir)/autotools/install-sh \
+	$(top_srcdir)/autotools/missing autotools/compile \
+	autotools/install-sh autotools/missing depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -308,13 +311,18 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+
+#
+# This file is processed by automake (produces file Makefile.in)
+#
+ACLOCAL_AMFLAGS = -I m4
 rama2met_exe_SOURCES = module_rama2met.F90 rama2metv2.F90
-TESTSUITE = $(srcdir)/testsuite
 
 # Additional files to be cleaned with 'make clean'
-CLEANFILES = *.o *.mod 
-EXTRA_DIST = est_rama.txt namelist.met README.md
+CLEANFILES = *.o *.mod
+TESTSUITE = $(srcdir)/testsuite
 SUBDIRS = . testsuite
+EXTRA_DIST = est_rama.txt namelist.met README.md
 all: all-recursive
 
 .SUFFIXES:
@@ -844,6 +852,9 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
+
+# The `:;' works around a Bash 3.2 bug when the output is not writeable.
+$(srcdir)/testsuite/package.m4: $(top_srcdir)/configure.ac
 
 .PHONY: $(EXTRA_DIST)
 $(EXTRA_DIST):
