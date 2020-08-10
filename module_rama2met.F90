@@ -94,10 +94,10 @@ anio=fecha(7:10)
 dia =fecha(1:2)
 mes = fecha(4:5)
 chora=hora(1:2)
-READ (anio, '(I4)'), ianio
-READ (dia, '(I2)'), idia
-READ (mes, '(I2)'), imes
-READ (hora, '(I2)'), ih
+READ (anio, '(I4)') ianio
+READ (dia, '(I2)') idia
+READ (mes, '(I2)') imes
+READ (hora, '(I2)') ih
   select case (imes)
   case (1,3,5,7,8,10)
     if(ih+isf.gt.23) then
@@ -248,7 +248,9 @@ subroutine guarda
     fname ='meteorologia_'//anio//'.csv'
     fname2='contaminantes_'//anio//'.csv'
     open (unit=12,file=fname ,status='old',action='read')
+    call logs('Opened '//fname)
     open (unit=13,file=fname2,status='old',action='read')
+    call logs('Opened '//fname2)
     do i=1,11
        read(12,*) cdum
        read(13,*) cdum
@@ -324,7 +326,6 @@ subroutine guarda
 !> 10. QC_String Quality character(len=*) :: corresponding to the quality control value
 !> 11. Observation_Value in the units prescribed for the grib code
 !>
-100 format (A10,a5,A3,A,F)
 300 continue
 end subroutine guarda
 !>  @brief count the number of rowns in a file
