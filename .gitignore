@@ -5,4 +5,7 @@
 *.prn
 *.log
 *.o
-
+testsuite/package.m4
+Makefile
+testsuite/Makefile
+*.status
