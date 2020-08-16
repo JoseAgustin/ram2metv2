@@ -209,6 +209,11 @@ end function
 !>  @date 08/02/2020
 !>  @version  2.0
 !>  @copyright Universidad Nacional Autonoma de Mexico
+!  _
+! | | ___  ___
+! | |/ _ \/ _ \
+! | |  __/  __/
+! |_|\___|\___|
 subroutine lee
 implicit none
 integer i,j

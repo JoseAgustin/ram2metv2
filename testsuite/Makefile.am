@@ -50,7 +50,7 @@ clean-local:
 	test ! -f '$(TESTSUITE)' || \
 	$(SHELL) '$(TESTSUITE)' --clean
      
-AUTOM4TE = $(SHELL) $(srcdir)/build-aux/missing --run autom4te
+AUTOM4TE = $(SHELL) $(top_srcdir)/autotools/missing --run autom4te
 AUTOTEST = $(AUTOM4TE) --language=autotest
 $(TESTSUITE): $(srcdir)/testsuite.at $(srcdir)/package.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
