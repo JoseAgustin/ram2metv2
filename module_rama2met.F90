@@ -1,7 +1,6 @@
-!
 !   rama2metv2.f90
 !>  @author Jose Agustin Garcia Reynoso
-!>  @date 08/02/2020
+!>  @date 02/08/2020
 !>  @version  2.0
 !>  @copyright Universidad Nacional Autonoma de Mexico
 !  ifort -O2 -o rama2met.exe rama2metv2.f90
@@ -28,9 +27,15 @@ common /STATIONS/n_rama,Message_type
 contains
 !>  @brief read namelist input file for selecting specific days
 !>  @author Jose Agustin Garcia Reynoso
-!>  @date 08/02/2020
+!>  @date 02/08/2020
 !>  @version  2.0
 !>  @copyright Universidad Nacional Autonoma de Mexico
+!   _                               _
+!  | | ___  ___     _ __  _ __ ___ | |
+!  | |/ _ \/ _ \   | '_ \| '_ ` _ \| |
+!  | |  __/  __/   | | | | | | | | | |
+!  |_|\___|\___|___|_| |_|_| |_| |_|_|
+!             |_____|
 subroutine lee_nml
     integer ::unit_nml
     logical :: existe
@@ -53,7 +58,7 @@ subroutine lee_nml
 end subroutine lee_nml
 !>  @brief fromwind direction and magnitude obtains wind vector in _y_ and _x_
 !>  @author Jose Agustin Garcia Reynoso
-!>  @date 08/02/2020
+!>  @date 02/08/2020
 !>  @version  2.0
 !>  @copyright Universidad Nacional Autonoma de Mexico
 !>  @param ival variable code
@@ -61,6 +66,12 @@ end subroutine lee_nml
 !>  @param sigue .true. finish computing .false. direction input
 !>  @param uw wind vector in _x_ axis (W to W)
 !>  @param vw wind vector in _y_ axis( N-S)
+!         _            _
+!  __   _(_) ___ _ __ | |_ ___
+!  \ \ / / |/ _ \ '_ \| __/ _ \
+!   \ V /| |  __/ | | | || (_) |
+!    \_/ |_|\___|_| |_|\__\___/
+!
 subroutine viento(ival,rval,sigue,uw,vw)
     integer ival
     logical sigue
@@ -78,9 +89,14 @@ subroutine viento(ival,rval,sigue,uw,vw)
 end subroutine viento
 !>  @brief reformat date and time from DD-MM-YYYY HH:MM to YYYYMMDD_HHMMSS
 !>  @author Jose Agustin Garcia Reynoso
-!>  @date 08/02/2020
+!>  @date 02/08/2020
 !>  @version  2.0
 !>  @copyright Universidad Nacional Autonoma de Mexico
+!   __                               _
+!  / _| ___ ___  _ ____   _____ _ __| |_
+! | |_ / __/ _ \| '_ \ \ / / _ \ '__| __|
+! |  _| (_| (_) | | | \ V /  __/ |  | |_
+! |_|  \___\___/|_| |_|\_/ \___|_|   \__|
 character(len=15) function fconvert(fecha,hora)
 integer,parameter :: isf=5
 integer,parameter :: if2=24-isf
@@ -90,14 +106,14 @@ character (len=5),intent(IN):: hora
 character (len=2) dia,mes,chora
 character (len=4) anio
 
-anio=fecha(7:10)
-dia =fecha(1:2)
-mes = fecha(4:5)
-chora=hora(1:2)
-READ (anio, '(I4)') ianio
-READ (dia, '(I2)') idia
-READ (mes, '(I2)') imes
-READ (hora, '(I2)') ih
+  anio=fecha(7:10)
+  dia =fecha(1:2)
+  mes = fecha(4:5)
+  chora=hora(1:2)
+  READ (anio, '(I4)') ianio
+  READ (dia, '(I2)') idia
+  READ (mes, '(I2)') imes
+  READ (hora, '(I2)') ih
   select case (imes)
   case (1,3,5,7,8,10)
     if(ih+isf.gt.23) then
@@ -158,55 +174,46 @@ end function fconvert
 !>  @brief converts text variable to its Grib_Code
 !>  from: https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html
 !>   |Variables | Table|
-!>   | --- | ---|
+!>   | ---      |   ---|
 !>   | Meterological variables PBa, TMP, WDR, WSP, RH|  128 |
 !>   | Particlulate Matter (coarse and fine) and ozone | 129|
 !>   | NO, NO2, CO, OC (PMCO) and SO2 | 141|
 !>  @author Jose Agustin Garcia Reynoso
-!>  @date 08/02/2020
-!>  @version  2.0
+!>  @date 23/08/2020
+!>  @version  3.0
 !>  @copyright Universidad Nacional Autonoma de Mexico
+!>  @param var Variable abbreviation to be mapped to its Grib code
+!                                      _
+!  __   _____ ___  _ ____   _____ _ __| |_
+!  \ \ / / __/ _ \| '_ \ \ / / _ \ '__| __|
+!   \ V / (_| (_) | | | \ V /  __/ |  | |_
+!    \_/ \___\___/|_| |_|\_/ \___|_|   \__|
+!
 integer function vconvert(var)
 character (len=3),intent(IN) ::var
 character (len=3):: cvar
+character (len=3),dimension(14):: cmap
+integer ,dimension(14):: imap
+integer :: i
+    cmap=["TMP","WSP","WDR","RH ","PBa",&      ! Tabñe 128
+          "O3 ","PM1","PM2", &                 ! Table 129
+          "CO ","SO2","NOX","NO ","NO2","PMC"] ! Table 141
+    imap=[1,11,31,32,52,   &   ! wind uwnd 33 and vwnd 34
+          180,156,157,     &
+          148,232,140,141,142,249]
    cvar=trim(var)
-   select case (cvar)
-    case ("PBa")   !Table 128
-        vconvert=1
-    case ("TMP")
-        vconvert=11
-    case ("WDR")
-        vconvert=31
-    case ("WSP")
-        vconvert=32
-    case ("RH")
-        vconvert=52
-    case ("O3")     !Table 129
-        vconvert=180
-    case("PM1")
-        vconvert=156
-    case("PM2")
-        vconvert=157
-    case ("CO")     !Tablw 141
-        vconvert=148
-    case("SO2")
-        vconvert=232
-    case("NOX")
-        vconvert=140
-    case("NO")
-        vconvert=141
-    case("NO2")
-        vconvert=142
-    case("PMC")
-        vconvert=249
-    case DEFAULT
-        vconvert=-99
-   end select
-return
+   do i=1,size(cmap)
+       if(trim(cvar).eq.trim(cmap(i))) then
+           vconvert=imap(i)
+           return
+       end if
+   end do
+   vconvert=-99
+   return
 end function
 !>  @brief read stations file
 !>  @author Jose Agustin Garcia Reynoso
-!>  @date 08/02/2020
+!>  @date 02/08/2020
 !>  @version  2.0
 !>  @copyright Universidad Nacional Autonoma de Mexico
 !  _
@@ -232,9 +239,15 @@ close(11)
 end subroutine lee
 !>  @brief read and stores specific time period for the variables
 !>  @author Jose Agustin Garcia Reynoso
-!>  @date 08/02/2020
+!>  @date 02/08/2020
 !>  @version  2.0
 !>  @copyright Universidad Nacional Autonoma de Mexico
+!                             _
+!    __ _ _   _  __ _ _ __ __| | __ _
+!   / _` | | | |/ _` | '__/ _` |/ _` |
+!  | (_| | |_| | (_| | | | (_| | (_| |
+!   \__, |\__,_|\__,_|_|  \__,_|\__,_|
+!   |___/
 subroutine guarda
     implicit none
     integer i,j
@@ -335,10 +348,15 @@ subroutine guarda
 end subroutine guarda
 !>  @brief count the number of rowns in a file
 !>   @author  Jose Agustin Garcia Reynoso
-!>   @date  07/13/2020
+!>   @date  13/07/2020
 !>   @version  2.2
 !>   @copyright Universidad Nacional Autonoma de Mexico 2020
 !>   @param  iunit file unit where the count has to be made
+!                        _
+!   ___ _   _  ___ _ __ | |_ __ _
+!  / __| | | |/ _ \ '_ \| __/ _` |
+! | (__| |_| |  __/ | | | || (_| |
+!  \___|\__,_|\___|_| |_|\__\__,_|
 integer function  cuenta(iunit)
     implicit none
     integer,intent(IN) :: iunit
@@ -358,6 +376,12 @@ end
 !>   @version  2.2
 !>   @copyright Universidad Nacional Autonoma de Mexico 2020
 !>   @param texto text to be displayed
+!  _
+! | | ___   __ _ ___
+! | |/ _ \ / _` / __|
+! | | (_) | (_| \__ \
+! |_|\___/ \__, |___/
+!          |___/     
 subroutine logs(texto)
     implicit none
     character(len=*),intent(in):: texto
