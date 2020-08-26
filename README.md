@@ -119,10 +119,10 @@ The rama2met.exe program requires as input the following files:
 
   **est_rama.txt** contains information from the stations: a three character ID, latitud, longitud, height above sea level and description.
 
-    Alias    Latitud     Longitud    Altitud    Estacion
-      ACO    19.635501    -98.912003    2198    Acolman
-      AJU    19.154286    -99.162611    2942    Ajusco
-      HGM    19.411617    -99.152207	2234	Hospital General de México
+         Alias    Latitud     Longitud    Altitud    Estacion
+          ACO    19.635501    -98.912003    2198    Acolman
+          AJU    19.154286    -99.162611    2942    Ajusco
+          HGM    19.411617    -99.152207	2234	Hospital General de México
 
   **meteorologia_YYYY.csv** contains the air pollutants concentrations during the year YYYY (i.e. 2020). [RAMA] format
 

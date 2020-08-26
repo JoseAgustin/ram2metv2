@@ -376,8 +376,8 @@ integer function  cuenta(iunit)
 end
 !>  @brief display log during different program stages
 !>   @author  Jose Agustin Garcia Reynoso
-!>   @date  08/08/2020
-!>   @version  2.2
+!>   @date  25/08/2020
+!>   @version  2.3
 !>   @copyright Universidad Nacional Autonoma de Mexico 2020
 !>   @param texto text to be displayed
 !  _
@@ -389,7 +389,11 @@ end
 subroutine logs(texto)
     implicit none
     character(len=*),intent(in):: texto
-    write(6,333) texto
-333 format(3x,5("*"),x,A35,x,"******")
+    character(len=50):: FMT
+    integer :: lef
+    lef=(40-len(trim(texto)))/2
+    if(lef.lt.1) lef=1
+    write(FMT,"('(3x,7(''*''),',I0,'x,A,',I0,'X,7(''*''))')") lef,lef
+    write(6,FMT) trim(texto)
 end subroutine
 end module variables
