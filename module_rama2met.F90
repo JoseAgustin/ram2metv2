@@ -195,12 +195,12 @@ character (len=3):: cvar
 character (len=3),dimension(14):: cmap
 integer ,dimension(14):: imap
 integer :: i
-    cmap=["TMP","WSP","WDR","RH ","PBa",&      ! Tabñe 128
-          "O3 ","PM1","PM2", &                 ! Table 129
-          "CO ","SO2","NOX","NO ","NO2","PMC"] ! Table 141
+    cmap=["PBa","TMP","WDR","WSP","RH ",&      ! Tabñe 128
+          "PM1","PM2","O3 ",&                 ! Table 129
+          "NOX","NO ","NO2","CO ","SO2","PMC"] ! Table 141
     imap=[1,11,31,32,52,   &   ! wind uwnd 33 and vwnd 34
-          180,156,157,     &
-          148,232,140,141,142,249]
+          156,157,180,     &
+          140,141,142,148,232,249]
    cvar=trim(var)
    do i=1,size(cmap)
        if(trim(cvar).eq.trim(cmap(i))) then
@@ -283,6 +283,10 @@ subroutine guarda
       ivar = vconvert(cvar)
     if(rval.ne.rnulo.and.ivar.eq.1 ) rval=rval*101325/760 ! conversion de mmHg a Pa
     if(rval.ne.rnulo.and.ivar.eq.11) rval=rval+273.15 ! conversion de C a K
+    if(rval.gt.11 .and. ivar .eq.32) then
+        print *,fecha,hora,c_id, rval
+        stop
+    end if
       cfecha= fconvert(fecha,hora)
       do j=1,n_rama
         if(c_id.eq.id_name(j).and.rval.ne.rnulo)then
@@ -381,7 +385,7 @@ end
 ! | |/ _ \ / _` / __|
 ! | | (_) | (_| \__ \
 ! |_|\___/ \__, |___/
-!          |___/     
+!          |___/
 subroutine logs(texto)
     implicit none
     character(len=*),intent(in):: texto
