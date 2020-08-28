@@ -190,19 +190,20 @@ end function fconvert
 !    \_/ \___\___/|_| |_|\_/ \___|_|   \__|
 !
 integer function vconvert(var)
+integer,parameter :: num_vars=16
 character (len=3),intent(IN) ::var
 character (len=3):: cvar
-character (len=3),dimension(14):: cmap
-integer ,dimension(14):: imap
+character (len=3),dimension(num_vars):: cmap
+integer ,dimension(num_vars):: imap
 integer :: i
-    cmap=["PBa","TMP","WDR","WSP","RH ",&      ! Tabñe 128
+    cmap=["PBa","TMP","WDR","WSP","UWN","VWN","RH ",&      ! Tabñe 128
           "PM1","PM2","O3 ",&                 ! Table 129
           "NOX","NO ","NO2","CO ","SO2","PMC"] ! Table 141
-    imap=[1,11,31,32,52,   &   ! wind uwnd 33 and vwnd 34
+    imap=[1,11,31,32,33,34,52,   &   ! wind uwnd 33 and vwnd 34
           156,157,180,     &
           140,141,142,148,232,249]
    cvar=trim(var)
-   do i=1,size(cmap)
+   do i=1,num_vars
        if(trim(cvar).eq.trim(cmap(i))) then
            vconvert=imap(i)
            return
