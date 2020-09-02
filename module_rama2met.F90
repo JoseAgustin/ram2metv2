@@ -55,6 +55,26 @@ subroutine lee_nml
             else
             stop '***** No namelist.met'
         ENDIF
+! Evaluating leap year
+    read(anio,'(I4)')lanio
+    if (mod(lanio,4)) month(2)=29
+    ! Evaluating valid dates
+    read(imes,'(I2)')lmes
+    if(lmes.lt.1 .or. 12.lt.lmes)  then
+      print*, "xxxxx Error imes namelist xxxxx";stop
+    end if
+    read(idia,'(I2)')ldia
+    if(ldia.gt.month(lmes)) then
+      print*, "xxxxx Error idia namelist xxxxx";stop
+    end if
+    read(fmes,'(I2)')lmes
+    if(lmes.lt.1 .or. 12.lt.lmes) then
+      print *, "<<<<< Error fmes namelist >>>>>";stop
+    end if
+    read(fdia,'(I2)')ldia
+    if(ldia.gt.month(lmes)) then
+      print *, "<<<<< Error fdia namelist >>>>> ";stop
+    end if
 end subroutine lee_nml
 !>  @brief fromwind direction and magnitude obtains wind vector in _y_ and _x_
 !>  @author Jose Agustin Garcia Reynoso
