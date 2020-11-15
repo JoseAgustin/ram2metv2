@@ -8,6 +8,7 @@
 module variables
 !> No. stations in localization file
 integer :: n_rama ;!>  value for missing value
+integer,dimension(12):: month=(/31,28,31,30,31,30,31,31,30,31,30,31/)
 real,parameter:: rnulo=-9999. ;!>  localization logitude coordinate
 real,allocatable  :: lon(:) ;!>  localization latitude coordinate
 real,allocatable  :: lat(:) ;!>  meters above sea level of station
@@ -22,7 +23,7 @@ character(len=2):: ihr ;!> end hour for output
 character(len=2):: fhr ;!>  message type
 character(len=6):: Message_type
 
-NAMELIST /FECHA/ anio,ihr, idia, imes,fhr, fdia, fmes
+NAMELIST /FECHA/ anio,ihr, idia, imes,fhr, fdia, fmes,month
 common /STATIONS/n_rama,Message_type
 contains
 !>  @brief read namelist input file for selecting specific days
@@ -57,7 +58,7 @@ subroutine lee_nml
         ENDIF
 ! Evaluating leap year
     read(anio,'(I4)')lanio
-    if (mod(lanio,4)) month(2)=29
+    if (mod(lanio,4).eq.0) month(2)=29
     ! Evaluating valid dates
     read(imes,'(I2)')lmes
     if(lmes.lt.1 .or. 12.lt.lmes)  then
