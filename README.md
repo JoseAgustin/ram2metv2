@@ -51,7 +51,7 @@ The [GRIB][gribt]  site contains a set of Parameter tables versions with the cod
 ### Table 128
 |Value| Parameter|Units| Abbrev.|
 |---| --- | --- |--- |
-001 | Pressure | Pa| PRES|
+|001| Pressure | Pa| PRES|
 |011| Temperature|K|TEMP|
 |031|Wind direction (from which blowing) | deg true | WDIR|
 |032|Wind speed |m/s| WIND|
