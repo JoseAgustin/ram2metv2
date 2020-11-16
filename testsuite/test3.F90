@@ -7,7 +7,6 @@ program test3
 use variables
 implicit none
 integer :: jmes,jhora,i
-character(len=10):: cfecha
 character(len=5):: chora
 character(len=32)::arg
 
@@ -17,13 +16,10 @@ character(len=32)::arg
   end do
 
 call logs("Testing function fconvert")
-cfecha="02-05-2020"
-chora="00:23"
   do jmes=1,12
-    write(cfecha(4:5),'(I2.2)') jmes
     do jhora =0,23,5
       write(chora(1:2),'(I2.2)') jhora
-      call logs(fconvert(cfecha,chora))
+      call logs(fconvert(2,jmes,2020,chora))
     end do
   end do
 end program test3

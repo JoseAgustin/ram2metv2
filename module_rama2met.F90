@@ -8,7 +8,6 @@
 module variables
 !> No. stations in localization file
 integer :: n_rama ;!>  value for missing value
-integer,dimension(12):: month=(/31,28,31,30,31,30,31,31,30,31,30,31/)
 real,parameter:: rnulo=-9999. ;!>  localization logitude coordinate
 real,allocatable  :: lon(:) ;!>  localization latitude coordinate
 real,allocatable  :: lat(:) ;!>  meters above sea level of station
@@ -23,7 +22,7 @@ character(len=2):: ihr ;!> end hour for output
 character(len=2):: fhr ;!>  message type
 character(len=6):: Message_type
 
-NAMELIST /FECHA/ anio,ihr, idia, imes,fhr, fdia, fmes,month
+NAMELIST /FECHA/ anio,ihr, idia, imes,fhr, fdia, fmes
 common /STATIONS/n_rama,Message_type
 contains
 !>  @brief read namelist input file for selecting specific days
@@ -38,6 +37,7 @@ contains
 !  |_|\___|\___|___|_| |_|_| |_| |_|_|
 !             |_____|
 subroutine lee_nml
+    integer,dimension(12):: month=(/31,28,31,30,31,30,31,31,30,31,30,31/)
     integer ::unit_nml
     logical :: existe
     existe = .FALSE.
@@ -118,23 +118,19 @@ end subroutine viento
 ! | |_ / __/ _ \| '_ \ \ / / _ \ '__| __|
 ! |  _| (_| (_) | | | \ V /  __/ |  | |_
 ! |_|  \___\___/|_| |_|\_/ \___|_|   \__|
-character(len=15) function fconvert(fecha,hora)
+character(len=15) function fconvert(id,im,ia,hora)
 integer,parameter :: isf=5
 integer,parameter :: if2=24-isf
-integer :: ih,idia,imes,ianio
-character(len=10),intent(IN):: fecha
+integer :: idia,imes,ianio
+integer,intent(IN) :: id,im,ia
 character (len=5),intent(IN):: hora
 character (len=2) dia,mes,chora
 character (len=4) anio
-
-  anio=fecha(7:10)
-  dia =fecha(1:2)
-  mes = fecha(4:5)
+    idia=id
+    imes=im
+    ianio=ia
   chora=hora(1:2)
-  READ (anio, '(I4)') ianio
-  READ (dia, '(I2)') idia
-  READ (mes, '(I2)') imes
-  READ (hora, '(I2)') ih
+  READ (chora, '(I2)') ih
   select case (imes)
   case (1,3,5,7,8,10)
     if(ih+isf.gt.23) then
@@ -217,10 +213,10 @@ character (len=3):: cvar
 character (len=3),dimension(num_vars):: cmap
 integer ,dimension(num_vars):: imap
 integer :: i
-    cmap=["PBa","TMP","WDR","WSP","UWN","VWN","RH ",&      ! Tabñe 128
+    cmap=["PBa","TMP","WDR","WSP","UWN","VWN","RH ",&      ! Table 128
           "PM1","PM2","O3 ",&                 ! Table 129
           "NOX","NO ","NO2","CO ","SO2","PMC"] ! Table 141
-    imap=[1,11,31,32,33,34,52,   &   ! wind uwnd 33 and vwnd 34
+    imap=[1,11,31,32,33,34,52,   &   ! Wind uwnd 33 and vwnd 34
           156,157,180,     &
           140,141,142,148,232,249]
    cvar=trim(var)
@@ -274,6 +270,10 @@ subroutine guarda
     implicit none
     integer i,j
     integer ivar
+    integer dy
+    integer mh
+    integer yr
+    integer es
     logical salir,sigue
     real :: rval,uw,vw,dir
     character(len=22) :: fname, fname2, cdum
@@ -281,6 +281,8 @@ subroutine guarda
     character(len=5) hora
     character(len=15) ::cfecha
     character(len=3):: c_id,cvar
+    character(len=1) :: sep
+    character(len=2) :: mes
     salir=.true.
     sigue=.false.
     Message_type='ADPSFC'
@@ -300,20 +302,25 @@ subroutine guarda
      I=0
     do while (salir)
     rval=rnulo
-    read(12,*,END=200)fecha,hora,c_id,cvar,rval
-    if (fecha(4:5).eq.imes) then
+    read(12,125,advance="no",IOSTAT=es)dy,sep,mh,sep,yr,hora,c_id
+    if (es>0) stop 'FILE met problem reading'
+    read(12,*,IOSTAT=es) cvar,rval
+    if (es>0) stop 'File met problem reading part 2'
+    !read(12,*,END=200)fecha,hora,c_id,cvar,rval
+    write(mes,'(I2.2)') mh
+    if (mes.eq.imes) then
       ivar = vconvert(cvar)
-    if(rval.ne.rnulo.and.ivar.eq.1 ) rval=rval*101325/760 ! conversion de mmHg a Pa
-    if(rval.ne.rnulo.and.ivar.eq.11) rval=rval+273.15 ! conversion de C a K
+    if(rval.ne.rnulo.and.ivar.eq.1 ) rval=rval*101325/760 ! conversion from mmHg to Pa
+    if(rval.ne.rnulo.and.ivar.eq.11) rval=rval+273.15 ! conversion from C to K
     if(rval.gt.11 .and. ivar .eq.32) then
-        print *,fecha,hora,c_id, rval
+        print *,dy,sep,mh,sep,yr," ",hora,c_id, rval
         stop
     end if
-      cfecha= fconvert(fecha,hora)
+      cfecha= fconvert(dy,mh,yr,hora)
       do j=1,n_rama
         if(c_id.eq.id_name(j).and.rval.ne.rnulo)then
           write(20,120)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),ivar,776.,10.,1,rval
-        ! vientos
+        ! wind conversion from dir,mag to u,v
         if(ivar.eq.31 .or. ivar.eq.32)then
             call viento(ivar,rval,sigue,uw,vw)
             if (uw.ne.rnulo.and.sigue) then
@@ -323,23 +330,27 @@ subroutine guarda
                 sigue=.false.
             end if
         end if
-        ! vientos fin
+        ! wind finish
          exit
         end if ! per station
       end do
-    end if ! fecha
-   if(fecha(4:5).eq.fmes.and. hora(1:2).eq.fhr.and.trim(cvar).eq."PBa") salir=.false.
+    end if ! dare
+   if(mes.eq.fmes.and. hora(1:2).eq.fhr.and.trim(cvar).eq."PBa") salir=.false.
    end do  !salir
 200 continue
   salir=.true.
   do while (salir)
     rval=rnulo
-    read(13,*,END=300)fecha,hora,c_id,cvar,rval
-       if (fecha(4:5).eq.imes) then
-         cfecha= fconvert(fecha,hora)
+    read(13,125,advance="no",IOSTAT=es)dy,sep,mh,sep,yr,hora,c_id
+    if (es>0) stop 'FILE poll problem reading'
+    read(13,*,IOSTAT=es) cvar,rval
+    if (es>0) stop 'File poll problem reading part 2'
+    write(mes,'(I2.2)') mh
+       if (mes.eq.imes) then
+         cfecha= fconvert(dy,mh,yr,hora)
          ivar = vconvert(cvar)
          !print *,ivar,cvar
-       if(rval.ne.rnulo.and.ivar.eq.148) rval=rval*1000! conversion de ppm a ppb
+       if(rval.ne.rnulo.and.ivar.eq.148) rval=rval*1000! conversion from ppm a ppb
          do j=1,n_rama
             if(c_id.eq.id_name(j).and.rval.ne.rnulo)then
              write(21,121)Message_type,c_id,cfecha,lat(j),lon(j),msn(j),ivar,776.,10.,1,rval
@@ -347,15 +358,17 @@ subroutine guarda
             end if
          end do ! n_rama
         end if ! fecha
-    if(fecha(4:5).eq.fmes .and. hora(1:2).eq.fhr.and.trim(cvar).eq."SO2") salir=.false.
+    if(mes.eq.fmes .and. hora(1:2).eq.fhr.and.trim(cvar).eq."SO2") salir=.false.
     end do  !while salir
     call logs("END PROGRAM")
     close(12)
     close(13)
     close(20)
     close(21)
-120   format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
-121   format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
+120 format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
+121 format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
+125 format(I2,A,I2,A,I4,x,A5,x,A3,x,A)
+
 !>  MET format has the following columns \cite brown2009model
 !>
 !> 1. Message_type
