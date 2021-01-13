@@ -20,6 +20,7 @@ program  test6
     fdia='23'
     ihr='01'
     fhr='07'
+    call lee
     call guarda
 
 end program
