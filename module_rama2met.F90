@@ -254,6 +254,7 @@ do i=1,n_rama
     !print *,id_name(i),lat(i),lon(i),msn(i)
 end do
 close(11)
+call logs("End reading file - "//fname)
 end subroutine lee
 !>  @brief read and stores specific time period for the variables
 !>  @author Jose Agustin Garcia Reynoso
@@ -274,6 +275,7 @@ subroutine guarda
     integer mh
     integer yr
     integer es
+    integer :: lineas=0
     logical salir,sigue
     real :: rval,uw,vw,dir
     character(len=22) :: fname, fname2, cdum
@@ -302,17 +304,17 @@ subroutine guarda
      I=0
     do while (salir)
     rval=rnulo
-    read(12,125,advance="no",IOSTAT=es)dy,sep,mh,sep,yr,hora,c_id
+    read(12,125,advance="no",IOSTAT=es,END=200)dy,sep,mh,sep,yr,hora,c_id
     if (es>0) stop 'FILE met problem reading'
     read(12,*,IOSTAT=es) cvar,rval
     if (es>0) stop 'File met problem reading part 2'
     !read(12,*,END=200)fecha,hora,c_id,cvar,rval
     write(mes,'(I2.2)') mh
-    if (mes.eq.imes) then
+    if (mes.ge.imes) then
       ivar = vconvert(cvar)
     if(rval.ne.rnulo.and.ivar.eq.1 ) rval=rval*101325/760 ! conversion from mmHg to Pa
     if(rval.ne.rnulo.and.ivar.eq.11) rval=rval+273.15 ! conversion from C to K
-    if(rval.gt.11 .and. ivar .eq.32) then
+    if(rval.gt.15 .and. ivar .eq.32) then
         print *,dy,sep,mh,sep,yr," ",hora,c_id, rval
         stop
     end if
@@ -341,12 +343,12 @@ subroutine guarda
   salir=.true.
   do while (salir)
     rval=rnulo
-    read(13,125,advance="no",IOSTAT=es)dy,sep,mh,sep,yr,hora,c_id
+    read(13,125,advance="no",IOSTAT=es,END=300)dy,sep,mh,sep,yr,hora,c_id
     if (es>0) stop 'FILE poll problem reading'
     read(13,*,IOSTAT=es) cvar,rval
     if (es>0) stop 'File poll problem reading part 2'
     write(mes,'(I2.2)') mh
-       if (mes.eq.imes) then
+       if (mes.ge.imes) then
          cfecha= fconvert(dy,mh,yr,hora)
          ivar = vconvert(cvar)
          !print *,ivar,cvar
@@ -360,15 +362,10 @@ subroutine guarda
         end if ! fecha
     if(mes.eq.fmes .and. hora(1:2).eq.fhr.and.trim(cvar).eq."SO2") salir=.false.
     end do  !while salir
-    call logs("END PROGRAM")
     close(12)
     close(13)
     close(20)
     close(21)
-120 format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
-121 format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
-125 format(I2,A,I2,A,I4,x,A5,x,A3,x,A)
-
 !>  MET format has the following columns \cite brown2009model
 !>
 !> 1. Message_type
@@ -383,7 +380,10 @@ subroutine guarda
 !> 10. QC_String Quality character(len=*) :: corresponding to the quality control value
 !> 11. Observation_Value in the units prescribed for the grib code
 !>
-300 continue
+300 call logs("END PROGRAM")
+120 format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
+121 format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
+125 format(I2,A,I2,A,I4,x,A5,x,A3,x,A)
 end subroutine guarda
 !>  @brief count the number of rowns in a file
 !>   @author  Jose Agustin Garcia Reynoso
