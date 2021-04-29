@@ -3,8 +3,9 @@
 #
 ACLOCAL_AMFLAGS = -I m4
 
-bin_PROGRAMS = rama2met.exe
+bin_PROGRAMS = rama2met.exe ramaop2met.exe
 rama2met_exe_SOURCES = module_rama2met.F90 rama2metv2.F90
+ramaop2met_exe_SOURCES= module_rama2met.F90 rama2metop.F90
 
 # Additional files to be cleaned with 'make clean'
 CLEANFILES = *.o *.mod

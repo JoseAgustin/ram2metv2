@@ -1,4 +1,4 @@
-!   rama2metv2.f90
+!   rama2metv2.F90
 !>  @author Jose Agustin Garcia Reynoso
 !>  @date 02/08/2020
 !>  @version  2.0
@@ -38,7 +38,7 @@ contains
 !             |_____|
 subroutine lee_nml
     integer,dimension(12):: month=(/31,28,31,30,31,30,31,31,30,31,30,31/)
-    integer ::unit_nml
+    integer ::unit_nml =10
     logical :: existe
     existe = .FALSE.
     call logs('Start reading file - namelist.met')
@@ -76,6 +76,7 @@ subroutine lee_nml
     if(ldia.gt.month(lmes)) then
       print *, "<<<<< Error fdia namelist >>>>> ";stop
     end if
+    close(unit_nml)
 end subroutine lee_nml
 !>  @brief fromwind direction and magnitude obtains wind vector in _y_ and _x_
 !>  @author Jose Agustin Garcia Reynoso
