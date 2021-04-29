@@ -66,6 +66,7 @@ write(21,120)Message_type,c_id(i),cfecha,lat(j),lon(j),msn(j),ivar,776.,10.,1,rv
 300 continue
 close (12)
 close (21)
+call logs("Fishing process")
 120 format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
 125 format(I2,x,I2,x,I4)
 end subroutine
