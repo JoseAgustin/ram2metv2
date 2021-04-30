@@ -16,14 +16,14 @@ call lee
 call lee_simat("O3 ",45)
 call lee_simat("PM2",39)
 
-!call guarda
-
 contains
 !>  @brief reads data downloaded from web page
 !>  @author Jose Agustin Garcia Reynoso
 !>  @date 28/04/2021
 !>  @version  1.0
 !>  @copyright Universidad Nacional Autonoma de Mexico
+!>   @param cvar variable name
+!>  @param nstat number of columns in input file
 subroutine lee_simat (cvar,nstat)
 implicit none
 character(len=3),intent(IN)::cvar
