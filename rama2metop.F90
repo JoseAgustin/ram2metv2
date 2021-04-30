@@ -55,7 +55,7 @@ allocate(rval(nstat),c_id(nstat))
         if (es>0) stop 'File consulta_ problem reading part 2'
         write(hora,'(I2.2,3A)') ihora,':00'
         cfecha= fconvert(dy,mh,yr,hora)
-        !print *,cfecha
+        !print *,cfecha,ihora,(rval(i),i=1,nstat)
         where(rval.lt.0)rval=rnulo
         do j=1,n_rama
             do i=1,nstat
@@ -71,6 +71,6 @@ close (21)
 deallocate(rval,c_id)
 call logs("Fishing process "//cvar)
 120 format(A6,x,A5,x,A15,x,f7.4,x,f9.4,x,f6.0,x,I3,x,f4.0,x,f6.0,x,I2,x,f10.1)
-125 format(I2,x,I2,x,I4)
+125 format(I2,x,I2,x,I4,x)
 end subroutine
 end program rama2metop
